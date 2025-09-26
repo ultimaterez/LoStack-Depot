@@ -1,0 +1,31 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    hostname: audiobookshelf
+    container_name: audiobookshelf
+    environment:
+      -PUID: 1024
+      -PGID: 101
+      -TZ: ${TZ}
+    networks:
+    - traefik_network
+    volumes:
+    - ${MEDIA_DIR}/audiobooks:/audiobooks
+    - ${APPDATA_DIR}/audiobookshelf/metadata:/metadata
+    - ${APPDATA_DIR}/audiobookshelf:/config
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.audiobookshelf.rule=Host(`audiobookshelf.${DOMAINNAME}`)
+    - lostack.port=80
+    - homepage.name=Audiobookshelf
+    - homepage.group=Media
+    - homepage.icon=audiobookshelf
+    - homepage.description=Audiobook Player
+    - homepage.href=https://audiobookshelf.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=audiobookshelf
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Fully open-source self-hosted audiobook and podcast server. It streams all audio formats, keeps and syncs progress across devices. Comes with open-source apps for Android and iOS.
+    - lostack.tags=audio,audiobooks,player,server,mp3
+    - lostack.project_url=https://github.com/advplyr/audiobookshelf

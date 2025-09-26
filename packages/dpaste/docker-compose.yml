@@ -1,0 +1,30 @@
+services:
+  dpaste:
+    hostname: dpaste
+    container_name: dpaste
+    image: darrenofficial/dpaste:latest
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    environment:
+      DATABASE_URL: sqlite:////db/dpaste.sqlite
+      PORT: 8000
+    volumes:
+    - ${APPDATA_DIR}/dpaste:/db
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.dpaste.rule=Host(`dpaste.${DOMAINNAME}`)
+    - lostack.port=8000
+    - homepage.name=Dpaste
+    - homepage.group=Pastebins
+    - homepage.icon=mdi-clipboard-outline
+    - homepage.description=Paste Service
+    - homepage.href=https://dpaste.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=dpaste
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Simple pastebin with multiple text and code option, with short url result easy to remember.
+    - lostack.tags=productivity,notes
+    - lostack.project_url=https://dpaste.org/
+    

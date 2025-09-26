@@ -1,0 +1,27 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    hostname: filebrowser
+    restart: unless-stopped
+    user: 1000:1000
+    networks:
+    - traefik_network
+    environment:
+      TZ: ${TZ}
+    volumes:
+    - ${APPDATA_DIR}/filebrowser/:/database/:rw
+    - ./:/data:rw
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.filebrowser.rule=Host(`filebrowser.${DOMAINNAME}`)
+    - traefik.http.services.filebrowser.loadbalancer.server.port=80
+    - homepage.name=Filebrowser
+    - homepage.group=File Management
+    - homepage.icon=filebrowser
+    - homepage.description=File Management
+    - homepage.href=https://filebrowser.${DOMAINNAME}/
+    - sablier.enable=true
+    - sablier.group=filebrowser
+    - lostack.duration=15m
+    - lostack.primary=true

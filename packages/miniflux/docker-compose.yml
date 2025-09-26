@@ -1,0 +1,60 @@
+services:
+  miniflux:
+    image: miniflux/miniflux:latest
+    container_name: miniflux
+    networks:
+    - traefik_network
+    depends_on:
+      miniflux-db:
+        condition: service_healthy
+    environment:
+    - DATABASE_URL=postgres://miniflux:$DATABASE_PASSWORD@miniflux-db/miniflux-db?sslmode=disable
+    - RUN_MIGRATIONS=1
+    - CREATE_ADMIN=1
+    - ADMIN_USERNAME=admin
+    - ADMIN_PASSWORD=$ADMIN_PASSWORD
+    - AUTH_PROXY_HEADER=Remote-User
+    - AUTH_PROXY_USER_CREATION=1
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.miniflux.rule=Host(`miniflux.${DOMAINNAME}`)
+    - lostack.port=8080
+    - homepage.name=Miniflux
+    - homepage.group=Apps
+    - homepage.icon=miniflux
+    - homepage.description=Feed Reader
+    - homepage.href=https://miniflux.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=miniflux
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=rss,json,atom,opml,search
+    - lostack.project_url=https://github.com/miniflux/v2
+    - lostack.details=Miniflux is a minimalist and opinionated feed reader. It's simple, fast, lightweight and super easy to install. Featuring advanced privacy and organization features.
+  miniflux-db:
+    image: postgres:15
+    container_name: miniflux-db
+    networks:
+    - traefik_network
+    environment:
+    - POSTGRES_USER=miniflux
+    - POSTGRES_PASSWORD=$DATABASE_PASSWORD
+    - POSTGRES_DB=miniflux-db
+    healthcheck:
+      test:
+      - CMD
+      - pg_isready
+      - -U
+      - miniflux
+      interval: 10s
+      start_period: 30s
+    volumes:
+    - ${APPDATA_DIR}/miniflux/db:/var/lib/postgresql/data
+    labels:
+    - homepage.name=Miniflux Postgres DB
+    - homepage.group=Databases
+    - homepage.icon=postgres
+    - homepage.description=Feed Reader
+    - lostack.autostart=true
+    - lostack.group=miniflux
+    - lostack.enable=true

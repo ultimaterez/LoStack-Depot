@@ -1,0 +1,28 @@
+services:
+  convos:
+    image: ghcr.io/convos-chat/convos:stable
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    container_name: convos
+    hostname: convos
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=IRC Web Client
+    - homepage.group=IRC
+    - homepage.href=https://convos.${DOMAINNAME}/
+    - homepage.icon=mdi-chat-outline
+    - homepage.name=Convos
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Always online web IRC client.
+    - lostack.tags=irc,chat
+    - lostack.project_url=https://awesome-docker-compose.com/apps/irc/convos
+    - lostack.autostart=true
+    - lostack.group=convos
+    - lostack.enable=true
+    # - traefik.http.routers.convos.rule=Host(`convos.${DOMAINNAME}`)
+    - lostack.port=3000
+    volumes:
+    - ${APPDATA_DIR}/convos:/data

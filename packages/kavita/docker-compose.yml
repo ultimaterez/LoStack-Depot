@@ -1,0 +1,31 @@
+services:
+  kavita:
+    image: lscr.io/linuxserver/kavita:latest
+    container_name: kavita
+    hostname: kavita
+    networks:
+    - traefik_network
+    restart: unless-stopped
+    environment:
+    - PUID=1024
+    - PGID=101
+    - TZ=${TZ}
+    volumes:
+    - ${APPDATA_DIR}/kavita/config:/config:rw
+    - ${MEDIA_DIR}/books:/data:ro
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.kavita.rule=Host(`kavita.${DOMAINNAME}`)
+    - lostack.port=5000
+    - homepage.name=Kavita
+    - homepage.group=Media
+    - homepage.icon=kavita
+    - homepage.description=EBook Reader
+    - homepage.href=https://kavita.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=kavita
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=ebooks,reader,comics,epub,opds,manga,pdf
+    - lostack.project_url=https://github.com/Kareadita/Kavita
+    - lostack.details=Kavita is a fast, feature rich, cross platform reading server. Built with the goal of being a full solution for all your reading needs. Setup your own server and share your reading collection with your friends and family.

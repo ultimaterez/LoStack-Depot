@@ -1,0 +1,24 @@
+services:
+  sshwifty:
+    container_name: sshwifty
+    image: niruix/sshwifty:latest
+    restart: always
+    hostname: sshwifty
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=SSH Web Client
+    - homepage.group=Remote Access
+    - homepage.href=https://sshwifty.${DOMAINNAME}/
+    - homepage.icon=sshwifty
+    - homepage.name=Sshwifty
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=remote,ssh,telnet
+    - lostack.project_url=https://github.com/nirui/sshwifty
+    - lostack.details=Sshwifty is a SSH and Telnet client made for the Web, allow you to access SSH and Telnet services right from your web browser.
+    - lostack.autostart=true
+    - lostack.group=sshwifty
+    - lostack.enable=true
+    # - traefik.http.routers.sshwifty.rule=Host(`sshwifty.${DOMAINNAME}`)
+    - lostack.port=8182

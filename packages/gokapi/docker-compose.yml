@@ -1,0 +1,29 @@
+services:
+  gokapi:
+    image: f0rc3/gokapi:latest
+    environment:
+    - TZ=${TZ}
+    restart: unless-stopped
+    container_name: gokapi
+    hostname: gokapi
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Expiring File Sharing
+    - homepage.group=File Transfer
+    - homepage.href=https://gokapi.${DOMAINNAME}/
+    - homepage.icon=mdi-file
+    - homepage.name=Gokapi
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing,privacy,s3,openid
+    - lostack.project_url=https://github.com/Forceu/gokapi
+    - lostack.details=Gokapi is a simple, self-hosted file sharing server with automatic expiration and encryption support — ideal for teams or individuals who want privacy, control, and no clutter.
+    - lostack.autostart=true
+    - lostack.group=gokapi
+    - lostack.enable=true
+    # - traefik.http.routers.gokapi.rule=Host(`gokapi.${DOMAINNAME}`)
+    - lostack.port=53842
+    volumes:
+    - ${APPDATA_DIR}/gokapi/config:/app/config
+    - ${APPDATA_DIR}/gokapi/data:/app/data

@@ -1,0 +1,30 @@
+services:
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: overseerr
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Plex Discovery Tool
+    - homepage.group=Media
+    - homepage.href=https://overseerr.${DOMAINNAME}/
+    - homepage.icon=overseerr
+    - homepage.name=Overseerr
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=overseerr
+    - lostack.enable=true
+    # - traefik.http.routers.overseerr.rule=Host(`overseerr.${DOMAINNAME}`)
+    - lostack.port=5055
+    - lostack.tags=requester
+    - lostack.project_url=https://github.com/sct/overseerr
+    - lostack.details=Overseerr is a free and open source software application for managing requests for your media library. It integrates with your existing services, such as Sonarr, Radarr, and Plex!
+    volumes:
+    - ${APPDATA_DIR}/overseerr:/config

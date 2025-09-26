@@ -1,0 +1,25 @@
+services:
+  pictshare:
+    container_name: pictshare
+    image: hascheksolutions/pictshare:2
+    hostname: pictshare
+    networks:
+    - traefik_network
+    labels:
+    - 'homepage.description=Image Hosting '
+    - homepage.group=Media
+    - homepage.href=https://pictshare.${DOMAINNAME}/
+    - homepage.icon=mdi-image
+    - homepage.name=Pictshare
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing,audio,videos,notes,code
+    - lostack.project_url=https://github.com/HaschekSolutions/pictshare
+    - lostack.details=PictShare is an open source image, mp4, pastebin hosting service with a simple resizing and upload API that you can host yourself. 
+    - lostack.autostart=true
+    - lostack.group=pictshare
+    - lostack.enable=true
+    # - traefik.http.routers.pictshare.rule=Host(`pictshare.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${MEDIA_DIR}/images:/var/www/data

@@ -1,0 +1,28 @@
+services:
+  yt-dlp-webui:
+    image: marcobaobao/yt-dlp-webui
+    healthcheck:
+      test: curl -f http://localhost:3033 || exit 1
+    restart: unless-stopped
+    container_name: yt-dlp-webui
+    hostname: yt-dlp-webui
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=YouTube Downloader
+    - homepage.group=Video Downloaders
+    - homepage.href=https://yt-dlp-webui.${DOMAINNAME}/
+    - homepage.icon=mdi-youtube
+    - homepage.name=Yt-dlp-webui
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=downloader,videos
+    - lostack.project_url=https://github.com/marcopiovanello/yt-dlp-web-ui
+    - lostack.details=A terrible web ui and RPC server for yt-dlp. Designed to be self-hosted.
+    - lostack.autostart=true
+    - lostack.group=yt-dlp-webui
+    - lostack.enable=true
+    # - traefik.http.routers.yt-dlp-webui.rule=Host(`yt-dlp-webui.${DOMAINNAME}`)
+    - lostack.port=3033
+    volumes:
+    - ${APPDATA_DIR}/downloads/youtube:/downloads

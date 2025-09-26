@@ -1,0 +1,24 @@
+Movim
+
+https://github.com/dbeaver/cloudbeaver/
+https://github.com/movim/movim_docker/blob/master/Dockerfile
+
+https://github.com/streetwriters/notesnook
+
+Mastodon
+
+
+services:
+  app:
+    container_name: rez-ai
+    image: 'ghcr.io/home-assistant/home-assistant:stable'
+    restart: unless-stopped
+    environment:
+      - TZ=${TIME_ZONE}
+    volumes:
+      # Paths are in the format <path/on/host>:<path/in/container>
+      - /srv/homeassistant:/config
+      - /mnt/videos:/mnt/videos
+      - /mnt/books:/mnt/books
+    network_mode: host
+    dns: ${DNS}

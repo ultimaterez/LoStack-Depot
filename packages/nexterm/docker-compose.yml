@@ -1,0 +1,26 @@
+services:
+  nexterm:
+    image: germannewsmaker/nexterm:1.0.2-OPEN-PREVIEW
+    restart: always
+    container_name: nexterm
+    hostname: nexterm
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=SSH/VNC/RDP Web Client
+    - homepage.group=Remote Access
+    - homepage.href=https://nexterm.${DOMAINNAME}/
+    - homepage.icon=nexterm
+    - homepage.name=Nexterm
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=ssh,vnc,rdp,sftp,managment
+    - lostack.project_url=https://github.com/gnmyt/Nexterm
+    - lostack.details=The open source server management software for SSH, VNC & RDP. Supports SFTP.
+    - lostack.autostart=true
+    - lostack.group=nexterm
+    - lostack.enable=true
+    # - traefik.http.routers.nexterm.rule=Host(`nexterm.${DOMAINNAME}`)
+    - lostack.port=6989
+    volumes:
+    - ${APPDATA_DIR}/nexterm:/app/data

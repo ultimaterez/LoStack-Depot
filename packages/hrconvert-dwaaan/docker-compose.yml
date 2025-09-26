@@ -1,0 +1,23 @@
+services:
+  hrconvert-dwaaan:
+    image: dwaaan/hrconvert2-docker:latest
+    container_name: hrconvert-dwaaan
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.hrconvert-dwaaan.rule=Host(`hrconvert-dwaaan.${DOMAINNAME}`)
+    - lostack.port=80
+    - homepage.name=HRConvert
+    - homepage.group=File Conversion
+    - homepage.icon=mdi-autorenew
+    - homepage.description=File Coversion
+    - homepage.href=https://hrconvert-dwaaan.${DOMAINNAME}/HRProprietary/HRConvert2/convertCore.php
+    - lostack.autostart=true
+    - lostack.group=hrconvert-dwaaan
+    - lostack.default_duration=1m
+    - lostack.primary=true
+    - lostack.tags=files,converter
+    - lostack.project_url=https://github.com/dwaaan/HRConvert2-Docker
+    - lostack.details=Docker files for HRConvert2 from https://github.com/zelon88/HRConvert2 - A self-hosted, drag-and-drop, & nosql file conversion server that supports 62x file formats.

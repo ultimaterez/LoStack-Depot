@@ -1,0 +1,26 @@
+services:
+  redis-insight:
+    image: redis/redisinsight:latest
+    hostname: redist-insight
+    container_name: redis-insight
+    restart: always
+    networks:
+    - traefik_network
+    volumes:
+    - ${APPDATA_DIR}/redis-insight:/data:rw
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.redis-insight.rule=Host(`redis-insight.${DOMAINNAME}`)
+    - lostack.port=5540
+    - homepage.name=Redis Insight
+    - homepage.group=Admin
+    - homepage.icon=redis
+    - homepage.description=Redis DB Web UI
+    - homepage.href=https://redis-insight.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=redis-insight
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=database,tools
+    - lostack.project_url=https://github.com/redis/RedisInsight/tree/main
+    - lostack.details=Redis Insight is an intuitive and efficient GUI for Redis, allowing you to interact with your databases and manage your data—with built-in support for Redis modules.

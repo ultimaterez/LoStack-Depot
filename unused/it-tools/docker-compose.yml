@@ -1,0 +1,26 @@
+services:
+  it-tools:
+    image: corentinth/it-tools
+    container_name: it-tools
+    hostname: it-tools
+    restart: unless-stopped
+    networks:
+      - traefik_network
+    environment:
+      PUID: 1024
+      PGID: 101
+      TZ: ${TZ}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.it-tools.entrypoints=https"
+      - "traefik.http.routers.it-tools.rule=Host(`it-tools.${DOMAINNAME}`)"
+      - "traefik.http.services.it-tools.loadbalancer.server.port=80"
+      - "homepage.name=IT-Tools"
+      - "homepage.group=Tools"
+      - "homepage.icon=it-tools"
+      - "homepage.description=Dev Tools"
+      - "homepage.href=https://it-tools.${DOMAINNAME}/"
+      - "sablier.enable=true"
+      - "sablier.group=it-tools"
+      - "lostack.duration=15m"
+      - "lostack.primary=true"

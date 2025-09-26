@@ -1,0 +1,39 @@
+services:
+  daily-stars:
+    image: ghcr.io/emanuelef/daily-stars-explorer:latest
+    hostname: daily-stars
+    container_name: daily-stars
+    networks:
+    - traefik_network
+    environment:
+    - HOST=0.0.0.0
+    - PORT=8080
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - -q
+      - http://127.0.0.1:8080/health
+      - -O
+      - '-'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+    - .env
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.daily-stars.rule=Host(`daily-stars.${DOMAINNAME}`)
+    - lostack.port=8080
+    - homepage.name=Daily Stars Explorer
+    - homepage.group=Admin
+    - homepage.icon=mdi-star-shooting-outline
+    - homepage.description=Github Repo Stars Explorer
+    - homepage.href=https://daily-stars.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=daily-stars
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.project_url=https://github.com/emanuelef/daily-stars-explorer
+    - lostack.tags=github,tools
+    - lostack.details=Do you ever wonder about the complete history of stars for GitHub repositories? GitHub's REST APIs come with certain limitations, allowing you to retrieve only up to 40,000 stars per repository. For those tracking a repository with more stars, this limitation can be quite frustrating. Don't be blinded by stars! While they show popularity, they don't guarantee quality. Underdog libraries with amazing potential often have low counts. Remember, even high-starred repos can fizzle out - stars can decline, too! In my quest for code, I've found hidden gems with few stars that were perfect, while some popular choices were bloated or on the way down. A growing or stable star count, rather than just a total high number, suggests sustainable interest and community engagement.

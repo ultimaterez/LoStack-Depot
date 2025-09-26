@@ -1,0 +1,78 @@
+services:
+  fathom:
+    image: usefathom/fathom:latest
+    environment:
+      - TZ=${TZ}
+      - FATHOM_SERVER_ADDR=:8080
+      - FATHOM_GZIP=true
+      - FATHOM_DEBUG=false
+      - FATHOM_DATABASE_DRIVER=mysql
+      - FATHOM_DATABASE_NAME=fathom
+      - FATHOM_DATABASE_USER=fathom
+      - FATHOM_DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - FATHOM_DATABASE_HOST=fathom-mysql:3306
+    links:
+      - fathom-mysql:fathom-mysql
+    depends_on:
+      - fathom-mysql
+    restart: always
+    volumes:
+      - ${APPDATA_DIR}/fathom/secrets:/lostack_secrets
+    entrypoint: |
+      sh -c '
+        if [ ! -f /lostack_secrets/fathom.secret ]; then
+          echo "Generating new FATHOM_SECRET..."
+          mkdir -p /lostack_secrets
+          FATHOM_SECRET=$(openssl rand -hex 32)
+          echo "FATHOM_SECRET=$$FATHOM_SECRET" > /lostack_secrets/fathom.secret
+        else
+          echo "Using existing FATHOM_SECRET from /lostack_secrets/fathom.secret"
+        fi
+
+        . /lostack_secrets/fathom.secret
+        export FATHOM_SECRET
+        exec ./fathom server
+      '
+    container_name: fathom
+    hostname: fathom
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Google Analytics Alternative
+      - homepage.group=Analytics
+      - homepage.href=https://fathom.${DOMAINNAME}/
+      - homepage.icon=mdi-ruler
+      - homepage.name=Fathom Lite
+      - lostack.default_duration=15m
+      - lostack.autostart=true
+      - lostack.group=fathom
+      - lostack.enable=true
+      # - traefik.http.routers.fathom.rule=Host(`fathom.${DOMAINNAME}`)
+      - lostack.port=8080
+      - lostack.tags=privacy
+      - lostack.project_url=https://awesome-docker-compose.com/apps/analytics/fathom
+      - lostack.details=A simple and privacy-focused web analytics (alternative to Google Analytics).
+
+  fathom-mysql:
+    image: mysql:5
+    volumes:
+      - ${APPDATA_DIR}/fathom/db:/var/lib/mysql
+    environment:
+      - TZ=${TZ}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=false
+      - MYSQL_DATABASE=fathom
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${ADMIN_PASSWORD}
+      - MYSQL_USER=fathom
+    restart: always
+    container_name: fathom-mysql
+    hostname: fathom-mysql
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=mysql service
+      - homepage.group=Databases
+      - homepage.icon=mysql
+      - homepage.name=Fathom Mysql
+      - lostack.autostart=true
+      - lostack.group=fathom

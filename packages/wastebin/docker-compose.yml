@@ -1,0 +1,27 @@
+services:
+  wastebin:
+    hostname: wastebin
+    container_name: wastebin
+    environment:
+    - ./db=/data/state.db
+    image: quxfoo/wastebin:latest
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Lightweight Pastebin
+    - homepage.group=Pastebins
+    - homepage.href=https://wastebin.${DOMAINNAME}/
+    - homepage.icon=mdi-clipboard-outline
+    - homepage.name=Wastebin
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,notes
+    - lostack.project_url=https://github.com/matze/wastebin
+    - lostack.details=A minimal pastebin with a design shamelessly copied from bin.
+    - lostack.autostart=true
+    - lostack.group=wastebin
+    - lostack.enable=true
+    # - traefik.http.routers.wastebin.rule=Host(`wastebin.${DOMAINNAME}`)
+    - lostack.port=8088
+    volumes:
+    - ${APPDATA_DIR}/wastebin:/data

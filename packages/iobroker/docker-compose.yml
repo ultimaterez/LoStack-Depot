@@ -1,0 +1,26 @@
+services:
+  iobroker:
+    restart: always
+    image: buanet/iobroker:latest
+    container_name: iobroker
+    hostname: iobroker
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=IoT Integration Platform
+    - homepage.group=IoT
+    - homepage.href=https://iobroker.${DOMAINNAME}/
+    - homepage.icon=iobroker
+    - homepage.name=IoBroker
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=ioBroker is an integration platform for the Internet of Things, focused on Building Automation, Smart Metering, Ambient Assisted Living, Process Automation, Visualization and Data Logging. ioBroker is not just an application, it's more of a concept and a database schema. It offers a very easy way for systems to interoperate. ioBroker defines some common rules for a pair of databases used to exchange data and publish events between different systems.
+    - lostack.project_url=https://github.com/ioBroker/ioBroker
+    - lostack.tags=iot,server,automation,monitoring,data
+    - lostack.autostart=true
+    - lostack.group=iobroker
+    - lostack.enable=true
+    # - traefik.http.routers.iobroker.rule=Host(`iobroker.${DOMAINNAME}`)
+    - lostack.port=8081
+    volumes:
+    - ${APPDATA_DIR}/iobroker:/opt/iobroker

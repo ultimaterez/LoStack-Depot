@@ -1,0 +1,32 @@
+services:
+  beets:
+    image: lscr.io/linuxserver/beets:latest
+    container_name: beets
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=Etc/UTC
+    restart: unless-stopped
+    hostname: beets
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Music Library Manager
+    - homepage.group=Media
+    - homepage.href=https://beets.${DOMAINNAME}/
+    - homepage.icon=beets
+    - homepage.name=Beets
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Beets is a music library manager and not, for the most part, a music player. It does include a simple player plugin and an experimental Web-based player, but it generally leaves actual sound-reproduction to specialized tools.
+    - lostack.tags=administration,audio,audiobooks,converter,files,mp3,music,player
+    - lostack.project_url=https://github.com/linuxserver/docker-beets/
+    - lostack.autostart=true
+    - lostack.group=beets
+    - lostack.enable=true
+    # - traefik.http.routers.beets.rule=Host(`beets.${DOMAINNAME}`)
+    - lostack.port=8337
+    volumes:
+    - ${APPDATA_DIR}/beets/config:/config
+    - ${MEDIA_DIR}/music:/music
+    - ${MEDIA_DIR}/download/music:/downloads

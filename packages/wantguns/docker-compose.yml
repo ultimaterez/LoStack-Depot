@@ -1,0 +1,30 @@
+services:
+  wantguns:
+    image: wantguns/bin
+    container_name: wantguns
+    hostname: wantguns
+    environment:
+    - BIN_PORT=6163
+    - BIN_LIMITS={form="16 MiB"}
+    - BIN_CLIENT_DESC=placeholder
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Paste With Bin Support
+    - homepage.group=Pastebins
+    - homepage.href=https://wantguns.${DOMAINNAME}/
+    - homepage.icon=mdi-clipboard-outline
+    - homepage.name=Wantguns
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,pdf,markdown
+    - lostack.project_url=https://github.com/wantguns/bin
+    - lostack.details=A minimal pastebin which also accepts binary files like Images, PDFs and ships multiple clients. It does not require you to host a SQL server and everything is self-contained in a statically linked binary (the docker image runs on scratch !), which makes it extremely easy to deploy.
+    - lostack.autostart=true
+    - lostack.group=wantguns
+    - lostack.enable=true
+    # - traefik.http.routers.wantguns.rule=Host(`wantguns.${DOMAINNAME}`)
+    - lostack.port=6163
+    volumes:
+    - ${APPDATA_DIR}/wantguns:/upload

@@ -1,0 +1,32 @@
+services:
+  pairdrop:
+    image: lscr.io/linuxserver/pairdrop:latest
+    container_name: pairdrop
+    hostname: pairdrop
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    environment:
+      PUID: 1000
+      PGID: 1000
+      WS_FALLBACK: false
+      RATE_LIMIT: false
+      RTC_CONFIG: false
+      DEBUG_MODE: false
+      TZ: ${TZ}
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.pairdrop.rule=Host(`pairdrop.${DOMAINNAME}`)
+    - lostack.port=3000
+    - homepage.name=Pairdrop
+    - homepage.group=File Management
+    - homepage.icon=pairdrop
+    - homepage.description=Filesharing Tool
+    - homepage.href=https://pairdrop.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=pairdrop
+    - lostack.default_duration=5m
+    - lostack.primary=true
+    - lostack.tags=files,sharing
+    - lostack.project_url=https://github.com/schlagmichdoch/pairdrop
+    - lostack.details=Local file sharing in your web browser. Inspired by Apple's AirDrop. Fork of Snapdrop.

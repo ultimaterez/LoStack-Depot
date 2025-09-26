@@ -1,0 +1,31 @@
+services:
+  piwigo:
+    image: lscr.io/linuxserver/piwigo:latest
+    container_name: piwigo
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: piwigo
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Photo Gallery
+    - homepage.group=Media
+    - homepage.href=https://piwigo.${DOMAINNAME}/
+    - homepage.icon=piwigo
+    - homepage.name=Piwigo
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=photos,image,sharing,media
+    - lostack.project_url=https://github.com/Piwigo/Piwigo
+    - lostack.details=Manage your photos with Piwigo, a full featured open source photo gallery application for the web. Star us on Github! More than 200 plugins and themes available. Join us and contribute!
+    - lostack.autostart=true
+    - lostack.group=piwigo
+    - lostack.enable=true
+    # - traefik.http.routers.piwigo.rule=Host(`piwigo.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${APPDATA_DIR}/piwigo:/config
+    - ${MEDIA_DIR}/images:gallery

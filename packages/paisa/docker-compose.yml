@@ -1,0 +1,26 @@
+services:
+  paisa:
+    image: ananthakumaran/paisa:latest
+    restart: unless-stopped
+    container_name: paisa
+    hostname: paisa
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Personal Finance Manager
+    - homepage.group=Budget
+    - homepage.href=https://paisa.${DOMAINNAME}/
+    - homepage.icon=paisa
+    - homepage.name=Paisa
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=finance,budgeting
+    - lostack.project_url=https://github.com/ananthakumaran/paisa
+    - lostack.details=Paisa is a Personal finance manager. It builds on top of the ledger double entry accounting tool. 
+    - lostack.autostart=true
+    - lostack.group=paisa
+    - lostack.enable=true
+    # - traefik.http.routers.paisa.rule=Host(`paisa.${DOMAINNAME}`)
+    - lostack.port=7500
+    volumes:
+    - ${MEDIA_DIR}/documents:/root/Documents/paisa/

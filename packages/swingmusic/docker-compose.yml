@@ -1,0 +1,27 @@
+services:
+  swingmusic:
+    image: ghcr.io/swingmx/swingmusic
+    container_name: swingmusic
+    restart: unless-stopped
+    hostname: swingmusic
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Music Player and Streaming
+    - homepage.group=Media
+    - homepage.href=https://swingmusic.${DOMAINNAME}/
+    - homepage.icon=mdi-music
+    - homepage.name=Swingmusic
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,media,music,audio,player,mp3
+    - lostack.project_url=https://github.com/swingmx/swingmusic
+    - lostack.details=Swing Music is a beautiful, self-hosted music player and streaming server for your local audio files. Like a cooler Spotify … but bring your own music.
+    - lostack.autostart=true
+    - lostack.group=swingmusic
+    - lostack.enable=true
+    # - traefik.http.routers.swingmusic.rule=Host(`swingmusic.${DOMAINNAME}`)
+    - lostack.port=1970
+    volumes:
+    - /path/to/music:/music
+    - /path/to/config:/config

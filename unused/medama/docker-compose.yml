@@ -1,0 +1,25 @@
+services:
+  medama:
+    image: ghcr.io/medama-io/medama
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - LOGGER=pretty
+    volumes:
+      - ${APPDATA_DIR}/medama:/app/data
+    container_name: medama
+    hostname: medama
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Website Analytics
+      - homepage.group=Medama
+      - homepage.href=https://medama.${DOMAINNAME}/
+      - homepage.icon=medama
+      - homepage.name=Medama
+      - lostack.duration=15m
+      - sablier.enable=true
+      - sablier.group=medama
+      - traefik.enable=true
+      - traefik.http.routers.medama.rule=Host(`medama.${DOMAINNAME}`)
+      - traefik.http.services.medama.loadbalancer.server.port=8080

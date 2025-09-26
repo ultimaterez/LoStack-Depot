@@ -1,0 +1,31 @@
+services:
+  serve:
+    image: nginx:latest
+    container_name: serve
+    hostname: serve
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    environment:
+      AUTO_INDEX: true
+    entrypoint: "/bin/sh -c \" echo 'events {}' > /etc/nginx/nginx.conf && \\ echo\
+      \ 'http {\n  server {\n    listen 80;\n\n    location / {\n      root /usr/share/nginx/html;\n\
+      \      autoindex on;\n    }\n\n    location /sprays/ {\n      root /usr/share/nginx/html;\n\
+      \      autoindex on;\n    }\n  }\n}' >> /etc/nginx/nginx.conf && \\ nginx -g\
+      \ 'daemon off;' \""
+    volumes:
+    - ${APPDATA_DIR}/serve:/usr/share/nginx/html/
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.serve.rule=Host(`serve.${DOMAINNAME}`)
+    - traefik.http.services.serve.loadbalancer.server.port=80
+    - traefik.http.services.serve.loadbalancer.server.scheme=http
+    - homepage.name=File Server
+    - homepage.group=File Management
+    - homepage.icon=nginx
+    - homepage.description=Simple File Service
+    - homepage.href=https://serve.${DOMAINNAME}/
+    - sablier.enable=true
+    - sablier.group=serve
+    - lostack.duration=15m
+    - lostack.primary=true

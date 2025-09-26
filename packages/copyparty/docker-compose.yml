@@ -1,0 +1,36 @@
+services:
+  copyparty:
+    image: copyparty/ac:latest
+    container_name: copyparty
+    stop_grace_period: 15s
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget --spider -q 127.0.0.1:3923/?reset
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 15s
+    hostname: copyparty
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Portable File Server
+    - homepage.group=File Managers
+    - homepage.href=https://copyparty.${DOMAINNAME}/
+    - homepage.icon=copyparty
+    - homepage.name=Copyparty
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.additional-config=true
+    - lostack.tags=files
+    - lostack.details=Portable file server with accelerated resumable uploads, deduplication, WebDAV, FTP, zeroconf, media indexer, video thumbnails, audio transcoding, and write-only folders, in a single file with no mandatory dependencies.
+    - lostack.project_url=https://awesome-docker-compose.com/apps/file-transfer---web-based-file-managers/copyparty
+    - lostack.autostart=true
+    - lostack.group=copyparty
+    - lostack.enable=true
+    # - traefik.http.routers.copyparty.rule=Host(`copyparty.${DOMAINNAME}`)
+    - lostack.port=3923
+    volumes:
+    - ${APPDATA_DIR}/copyparty:/cfg:z
+    - ${MEDIA_DIR}/:/w:z

@@ -1,0 +1,38 @@
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v1.12.0
+    container_name: mealie
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    environment:
+      ALLOW_SIGNUP: false
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+      MAX_WORKERS: 1
+      WEB_CONCURRENCY: 1
+      BASE_URL: https://mealie.${DOMAINNAME}
+    hostname: mealie
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Recipe Manager
+    - homepage.group=Recipe Managment
+    - homepage.href=https://mealie.${DOMAINNAME}/
+    - homepage.icon=mealie
+    - homepage.name=Mealie
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=planning,organization,recipes
+    - lostack.project_url=https://github.com/mealie-recipes/mealie
+    - lostack.details=Mealie is a self hosted recipe manager and meal planner with a RestAPI backend and a reactive frontend application built in Vue for a pleasant user experience for the whole family. Easily add recipes into your database by providing the url and mealie will automatically import the relevant data or add a family recipe with the UI editor
+    - lostack.autostart=true
+    - lostack.group=mealie
+    - lostack.enable=true
+    # - traefik.http.routers.mealie.rule=Host(`mealie.${DOMAINNAME}`)
+    - lostack.port=9000
+    volumes:
+    - ${APPDATA_DIR}/mealie:/app/data/

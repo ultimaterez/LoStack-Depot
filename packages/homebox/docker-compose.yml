@@ -1,0 +1,30 @@
+services:
+  homebox:
+    image: ghcr.io/hay-kot/homebox:latest
+    container_name: homebox
+    restart: always
+    environment:
+    - HBOX_LOG_LEVEL=info
+    - HBOX_LOG_FORMAT=text
+    - HBOX_WEB_MAX_UPLOAD_SIZE=10
+    hostname: homebox
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Organization System
+    - homepage.group=Inventory Management
+    - homepage.href=https://homebox.${DOMAINNAME}/
+    - homepage.icon=homebox
+    - homepage.name=Homebox
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=organization,home
+    - lostack.project_url=https://github.com/hay-kot/homebox
+    - lostack.details=Homebox is the inventory and organization system built for the Home User
+    - lostack.autostart=true
+    - lostack.group=homebox
+    - lostack.enable=true
+    # - traefik.http.routers.homebox.rule=Host(`homebox.${DOMAINNAME}`)
+    - lostack.port=7745
+    volumes:
+    - ${APPDATA_DIR}/homebox:/data/

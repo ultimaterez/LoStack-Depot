@@ -1,0 +1,54 @@
+services:
+  bytestash:
+    image: ghcr.io/jordan-dalby/bytestash:latest
+    hostname: bytestash
+    container_name: bytestash
+    restart: always
+    networks:
+    - traefik_network
+    environment:
+      BASE_PATH: ""
+      TOKEN_EXPIRY: 24h
+      ALLOW_NEW_ACCOUNTS: true
+      DEBUG: true
+      DISABLE_ACCOUNTS: false
+      DISABLE_INTERNAL_ACCOUNTS: false
+    volumes:
+    - ${APPDATA_DIR}/bytestash/data:/data/snippets
+    - ${APPDATA_DIR}/bytestash/secrets:/lostack_secrets
+    entrypoint: |
+        sh -c '
+        SECRET_FILE="/lostack_secrets/bytestash.jwt"
+        if [ -f "$$SECRET_FILE" ]; then
+          echo "Loading existing JWT_SECRET from $$SECRET_FILE..."
+          export JWT_SECRET=$$(cat "$$SECRET_FILE")
+        else
+          echo "JWT_SECRET not found, generating a secure random secret..."
+          export JWT_SECRET=$$(node -e "console.log(require(\"crypto\").randomBytes(64).toString(\"hex\"))")
+          echo "$$JWT_SECRET" > "$$SECRET_FILE"
+          echo "JWT_SECRET saved to $$SECRET_FILE (first 16 chars: $${JWT_SECRET:0:16})"
+        fi
+
+        if [ $${#JWT_SECRET} -lt 32 ]; then
+          echo "Warning: JWT_SECRET is shorter than recommended (32+ characters)"
+        fi
+
+        echo "Starting ByteStash..."
+        exec node src/app.js
+        '
+    labels:
+    - lostack.enable=true
+    - traefik.http.routers.bytestash.entrypoints=https
+    # - traefik.http.routers.bytestash.rule=Host(`bytestash.${DOMAINNAME}`)
+    - lostack.port=5000
+    - homepage.name=ByteStash
+    - homepage.group=Pastebins
+    - homepage.icon=bytestash
+    - homepage.description=Code Snippets
+    - homepage.href=https://bytestash.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=bytestash
+    - lostack.default_duration=30m
+    - lostack.primary=true
+    - lostack.details=ByteStash is a self-hosted web application designed to store, organise, and manage your code snippets efficiently. With support for creating, editing, and filtering snippets, ByteStash helps you keep track of your code in one secure place.
+    - lostack.project_url=https://github.com/jordan-dalby/ByteStash

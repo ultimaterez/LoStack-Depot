@@ -1,0 +1,30 @@
+services:
+  ihatemoney:
+    image: ihatemoney/ihatemoney:latest
+    container_name: ihatemoney
+    environment:
+    - PORT=8000
+    - PUID=0
+    - PGID=0
+    restart: unless-stopped
+    hostname: ihatemoney
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Manage Shared Expenses
+    - homepage.group=Budget
+    - homepage.href=https://ihatemoney.${DOMAINNAME}/
+    - homepage.icon=ihatemoney
+    - homepage.name=Ihatemoney
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=budgeting,productivity
+    - lostack.project_url=https://github.com/spiral-project/ihatemoney
+    - lostack.details=A simple shared budget manager web application. I hate money is a web application made to ease shared budget management. It keeps track of who bought what, when, and for whom; and helps to settle the bills.
+    - lostack.autostart=true
+    - lostack.group=ihatemoney
+    - lostack.enable=true
+    # - traefik.http.routers.ihatemoney.rule=Host(`ihatemoney.${DOMAINNAME}`)
+    - lostack.port=8000
+    volumes:
+    - ${APPDATA_DIR}/ihatemoney:/database

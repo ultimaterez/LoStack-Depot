@@ -1,0 +1,28 @@
+services:
+  lms:
+    image: epoupon/lms
+    restart: unless-stopped
+    user: 1000:1000
+    container_name: lms
+    hostname: lms
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Web Music Player
+    - homepage.group=Media
+    - homepage.href=https://lms.${DOMAINNAME}/
+    - homepage.icon=mdi-music
+    - homepage.name=Lms
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,music,player,media
+    - lostack.project_url=https://github.com/epoupon/lms
+    - lostack.details=LMS is a self-hosted music streaming software. Access your music collection from anywhere using a web interface!
+    - lostack.autostart=true
+    - lostack.group=lms
+    - lostack.enable=true
+    # - traefik.http.routers.lms.rule=Host(`lms.${DOMAINNAME}`)
+    - lostack.port=5082
+    volumes:
+    - ${MEDIA_DIR}/music:/music:ro
+    - ${APPDATA_DIR}/lms:/var/lms:rw

@@ -1,0 +1,34 @@
+services:
+  linkding:
+    image: sissbruecker/linkding:latest
+    container_name: linkding
+    hostname: linkding
+    networks:
+    - traefik_network
+    restart: unless-stopped
+    volumes:
+    - ${APPDATA_DIR}/linkding:/etc/linkding/data
+    environment:
+      - LD_DISABLE_BACKGROUND_TASKS=False
+      - LD_DISABLE_URL_VALIDATION=False
+      - LD_ENABLE_AUTH_PROXY=True 
+      - LD_AUTH_PROXY_USERNAME_HEADER=HTTP_REMOTE_USER
+      - LD_AUTH_PROXY_LOGOUT_URL=$DOMAINNAME
+      - LD_CSRF_TRUSTED_ORIGINS=https://linkding.$DOMAINNAME
+    labels:
+      - lostack.enable=true
+      # - traefik.http.routers.linkding.rule=Host(`linkding.${DOMAINNAME}`)
+      - lostack.port=9090
+      - homepage.name=Linkding
+      - homepage.group=Apps
+      - homepage.icon=linkding
+      - homepage.description=Bookmark Manager
+      - homepage.href=https://linkding.${DOMAINNAME}/
+      - lostack.autostart=true
+      - lostack.group=linkding
+      - lostack.default_duration=15m
+      - lostack.primary=true
+      - lostack.login=auto
+      - lostack.tags=bookmarks,autologin
+      - lostack.project_url=https://github.com/sissbruecker/linkding
+      - lostack.details=Self-hosted bookmark manager that is designed be to be minimal, fast, and easy to set up using Docker.

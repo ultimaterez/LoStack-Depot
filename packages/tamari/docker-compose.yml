@@ -1,0 +1,26 @@
+services:
+  tamari:
+    container_name: tamari
+    image: alexbates/tamari:0.8
+    restart: always
+    hostname: tamari
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Recipe Manager
+    - homepage.group=Recipe Managment
+    - homepage.href=https://tamari.${DOMAINNAME}/
+    - homepage.icon=tamari
+    - homepage.name=Tamari
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=recipes
+    - lostack.project_url=https://github.com/alexbates/Tamari
+    - lostack.details=Tamari is a fully-featured recipe manager web application built using Python and the Flask Framework.
+    - lostack.autostart=true
+    - lostack.group=tamari
+    - lostack.enable=true
+    # - traefik.http.routers.tamari.rule=Host(`tamari.${DOMAINNAME}`)
+    - lostack.port=4888
+    volumes:
+    - ${APPDATA_DIR}/tamari:/app/appdata

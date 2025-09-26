@@ -1,0 +1,27 @@
+services:
+  karaoke-eternal:
+    image: radrootllc/karaoke-eternal
+    container_name: karaoke-eternal
+    restart: unless-stopped
+    hostname: karaoke-eternal
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Personal Media Server
+    - homepage.group=Media
+    - homepage.href=https://karaoke-eternal.${DOMAINNAME}/
+    - homepage.icon=karaoke-eternal
+    - homepage.name=Karaoke-eternal
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,music,audio,mp3,player
+    - lostack.project_url=https://github.com/bhj/KaraokeEternal
+    - lostack.details=Host awesome karaoke parties where everyone can easily find and queue songs from their phone's browser. The player is also fully browser-based with support for MP3+G, MP4 videos and WebGL visualizations. The server is self-hosted and runs on nearly everything.
+    - lostack.autostart=true
+    - lostack.group=karaoke-eternal
+    - lostack.enable=true
+    # - traefik.http.routers.karaoke-eternal.rule=Host(`karaoke-eternal.${DOMAINNAME}`)
+    - lostack.port=8080
+    volumes:
+    - ${APPDATA_DIR}:/config
+    - ${MEDIA_DIR}/music:/mnt/karaoke

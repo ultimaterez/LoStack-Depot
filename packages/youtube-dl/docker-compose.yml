@@ -1,0 +1,26 @@
+services:
+  youtube-dl:
+    image: nbr23/youtube-dl-server:latest
+    restart: always
+    container_name: youtube-dl
+    hostname: youtube-dl
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=YouTube Downloader
+    - homepage.group=Video Downloaders
+    - homepage.href=https://youtube-dl.${DOMAINNAME}/
+    - homepage.icon=youtube-dl
+    - homepage.name=Youtube-dl
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=downloader,videos,podcasts
+    - lostack.project_url=https://github.com/nbr23/youtube-dl-server
+    - lostack.details=Simple Web and REST interface for downloading youtube videos onto a server. starlette + yt-dlp / youtube-dl
+    - lostack.autostart=true
+    - lostack.group=youtube-dl
+    - lostack.enable=true
+    # - traefik.http.routers.youtube-dl.rule=Host(`youtube-dl.${DOMAINNAME}`)
+    - lostack.port=8080
+    volumes:
+    - ${APPDATA_DIR}/youtube-dl:/youtube-dl

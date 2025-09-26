@@ -1,0 +1,26 @@
+services:
+  ulogger:
+    container_name: ulogger
+    image: bfabiszewski/ulogger
+    environment:
+    - ULOGGER_LANG=pl
+    restart: unless-stopped
+    hostname: ulogger
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Geolocation Tracker
+    - homepage.group=Maps and GPS
+    - homepage.href=https://ulogger.${DOMAINNAME}/
+    - homepage.icon=mdi-earth
+    - homepage.name=Ulogger
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=gps,maps
+    - lostack.project_url=https://github.com/bfabiszewski/ulogger-server
+    - lostack.details=This is a web application for real-time collection of geolocation data, tracks viewing and management. Together with a dedicated μlogger mobile client it may be used as a complete self hosted server–client solution for logging and monitoring users' geolocation.
+    - lostack.autostart=true
+    - lostack.group=ulogger
+    - lostack.enable=true
+    # - traefik.http.routers.ulogger.rule=Host(`ulogger.${DOMAINNAME}`)
+    - lostack.port=80

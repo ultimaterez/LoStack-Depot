@@ -1,0 +1,31 @@
+services:
+  pyload-ng:
+    image: lscr.io/linuxserver/pyload-ng:latest
+    container_name: pyload-ng
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: pyload-ng
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=ownload Manager
+    - homepage.group=File Downloader
+    - homepage.href=https://pyload-ng.${DOMAINNAME}/
+    - homepage.icon=mdi-download-multiple
+    - homepage.name=Pyload-ng
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=downloader,files,videos,music,tv
+    - lostack.project_url=https://github.com/pyload/pyload
+    - lostack.details=The free and open-source Download Manager written in pure Python
+    - lostack.autostart=true
+    - lostack.group=pyload-ng
+    - lostack.enable=true
+    # - traefik.http.routers.pyload-ng.rule=Host(`pyload-ng.${DOMAINNAME}`)
+    - lostack.port=8000
+    volumes:
+    - ${APPDATA_DIR}/pyload-ng/config:/config
+    - ${MEDIA_DIR}/downloads:/downloads

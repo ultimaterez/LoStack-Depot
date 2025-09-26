@@ -1,0 +1,28 @@
+services:
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+    container_name: excalidraw
+    hostname: excalidraw
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    stdin_open: true
+    healthcheck:
+      disable: true
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.excalidraw.rule=Host(`excalidraw.${DOMAINNAME}`)
+    - lostack.port=80
+    - traefik.http.services.excalidraw.loadbalancer.server.scheme=http
+    - homepage.name=Excalidraw
+    - homepage.group=Apps
+    - homepage.icon=excalidraw
+    - homepage.description=Diagram Tool
+    - homepage.href=https://excalidraw.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=excalidraw
+    - lostack.default_duration=5m
+    - lostack.primary=true
+    - lostack.tags=tools,diagrams,productivity
+    - lostack.project_url=https://github.com/excalidraw/excalidraw
+    - lostack.details=An open source virtual hand-drawn style whiteboard. Collaborative and end-to-end encrypted.

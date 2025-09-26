@@ -1,0 +1,26 @@
+services:
+  myspeed:
+    container_name: myspeed
+    image: germannewsmaker/myspeed
+    restart: unless-stopped
+    hostname: myspeed
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Self-Hosted Speed Test
+    - homepage.group=Speedtest
+    - homepage.href=https://myspeed.${DOMAINNAME}/
+    - homepage.icon=myspeed
+    - homepage.name=Myspeed
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=tools,network
+    - lostack.project_url=https://github.com/gnmyt/myspeed
+    - lostack.details=A speed test analysis software that shows your internet speed for up to 30 days
+    - lostack.autostart=true
+    - lostack.group=myspeed
+    - lostack.enable=true
+    # - traefik.http.routers.myspeed.rule=Host(`myspeed.${DOMAINNAME}`)
+    - lostack.port=5216
+    volumes:
+    - ${APPDATA_DIR}/myspeed:/myspeed/data

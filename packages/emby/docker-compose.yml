@@ -1,0 +1,32 @@
+services:
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: emby
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Personal Media Server
+    - homepage.group=Media
+    - homepage.href=https://emby.${DOMAINNAME}/
+    - homepage.icon=emby
+    - homepage.name=Emby
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=media,server,files
+    - lostack.project_url=https://emby.media/
+    - lostack.details=Emby Server is a personal media server with apps on just about every device. It features a REST-based API with built-in documention to facilitate client development. We also have client libraries for our API to enable rapid development.
+    - lostack.autostart=true
+    - lostack.group=emby
+    - lostack.enable=true
+    # - traefik.http.routers.emby.rule=Host(`emby.${DOMAINNAME}`)
+    - lostack.port=8096
+    volumes:
+    - ${APPDATA_DIR}/emby/:/config
+    - ${MEDIA_DIR}/tv:/data/tvshows
+    - ${MEDIA_DIR}/movies:/data/movies

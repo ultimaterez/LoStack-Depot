@@ -1,0 +1,26 @@
+services:
+  actual-budget:
+    image: actualbudget/actual-server:latest
+    restart: unless-stopped
+    container_name: actual-budget
+    hostname: actual-budget
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Personal Finance
+    - homepage.group=Budget
+    - homepage.href=https://actual-budget.${DOMAINNAME}/
+    - homepage.icon=actual-budget
+    - homepage.name=Actual-budget
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Actual is a local-first personal finance tool based on zero-sum budgeting. It supports synchronization across devices, custom rules, manual transaction importing (from QIF, OFX, and QFX files), and optional automatic synchronization with many banks.
+    - lostack.tags=budgeting,finance,productivity
+    - lostack.project_url=https://github.com/actualbudget/actual
+    - lostack.autostart=true
+    - lostack.group=actual-budget
+    - lostack.enable=true
+    # - traefik.http.routers.actual-budget.rule=Host(`actual-budget.${DOMAINNAME}`)
+    - lostack.port=5006
+    volumes:
+    - ${APPDATA_DIR}/actual-budget:/data

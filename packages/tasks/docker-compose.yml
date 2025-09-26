@@ -1,0 +1,27 @@
+services:
+  tasks:
+    image: baldissaramatheus/tasks.md
+    container_name: tasks
+    hostname: tasks
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    volumes:
+    - $APPDATA_DIR/tasksmd/tasks:/tasks
+    - $APPDATA_DIR/tasksmd/config:/config
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.tasks.rule=Host(`tasks.${DOMAINNAME}`)
+    - lostack.port=8080
+    - homepage.name=Tasks
+    - homepage.group=Apps
+    - homepage.icon=mdi-format-list-checks
+    - homepage.description=Todo Lists Manager
+    - homepage.href=https://tasks.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=tasks
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,tasks,markdown
+    - lostack.project_url=https://github.com/BaldissaraMatheus/Tasks.md
+    - lostack.details=A self-hosted, Markdown file based task management board.

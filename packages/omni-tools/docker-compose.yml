@@ -1,0 +1,24 @@
+services:
+  omni-tools:
+    image: iib0011/omni-tools
+    container_name: omni-tools
+    hostname: omni-tools
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.omni-tools.rule=Host(`omni-tools.${DOMAINNAME}`)
+    - lostack.port=80
+    - homepage.name=Omni Tools
+    - homepage.group=Tools
+    - homepage.icon=omni-tools
+    - homepage.description=Tools Collection
+    - homepage.href=https://omni-tools.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=omni-tools
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=tools
+    - lostack.project_url=https://github.com/iib0011/omni-tools
+    - lostack.details=Self-hosted collection of powerful web-based tools for everyday tasks. No ads, no tracking, just fast, accessible utilities right from your browser!

@@ -1,0 +1,294 @@
+services:
+  authelia:
+    image: authelia/authelia
+    hostname: authelia
+    container_name: authelia
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    depends_on:
+    - traefik
+    - openldap
+    environment:
+      TZ: $TZ
+      X_AUTHELIA_CONFIG_FILTERS: template
+      AUTHELIA_SERVER_BUFFERS_READ: 16384
+      AUTHELIA_SERVER_BUFFERS_WRITE: 16384
+      AUTHELIA_LOG_LEVEL: info
+      AUTHELIA_LOG_FORMAT: text
+      AUTHELIA_LOG_FILE_PATH: /config/authelia.log
+      AUTHELIA_LOG_KEEP_STDOUT: false
+      AUTHELIA_REGULATION_MAX_RETRIES: 10
+      AUTHELIA_REGULATION_FIND_TIME: 2 minutes
+      AUTHELIA_REGULATION_BAN_TIME: 3 minutes
+      AUTHELIA_SERVER_ADDRESS: :9091
+      AUTHELIA_THEME: dark
+      AUTHELIA_TOTP_ISSUER: authelia.com
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ATTRIBUTES_GROUP_NAME: cn
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION: custom
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDRESS: ldaps://openldap
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_START_TLS: false
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_TLS_SKIP_VERIFY: true
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_TLS_MINIMUM_VERSION: TLS1.2
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_BASE_DN: ${LDAP_BASE_DN}
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_USERS_DN: ou=people
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERS_FILTER: (&({username_attribute}={input})(objectClass=person))
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_GROUPS_DN: ou=groups
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUPS_FILTER: (&(uniquemember={dn})(objectclass=groupOfUniqueNames))
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USER: cn=${LDAP_ADMIN_USER},${LDAP_BASE_DN}
+      DOMAINNAME: ${DOMAINNAME}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      CUST_AUTHELIA_PREFIX: ${AUTHELIA_PREFIX}
+      CUST_AUTHELIA_JWT_SECRET: ${AUTHELIA_JWT_SECRET}
+      CUST_AUTHELIA_STORAGE_ENCRYPTION_KEY: ${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+      CUST_AUTHELIA_SESSION_SECRET: ${AUTHELIA_SESSION_SECRET}
+    ports:
+    - ${AUTHELIA_PORT}:${AUTHELIA_PORT}
+    volumes:
+    - ${CONFIG_DIR}/authelia:/config
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.authelia.rule=Host(`${AUTHELIA_PREFIX}.${DOMAINNAME}`)
+      || Host(`auth.${DOMAINNAME}`)
+    - traefik.http.routers.authelia.entrypoints=https
+    - traefik.http.routers.authelia.tls=true
+    - traefik.http.routers.authelia.tls.options=default
+    - traefik.http.middlewares.authelia.forwardauth.address=http://authelia:${AUTHELIA_PORT}/api/authz/forward-auth
+    - traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true
+    - traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email
+    - homepage.name=Authelia
+    - homepage.group=Services
+    - homepage.icon=authelia
+    - homepage.description=Authentication service
+    - homepage.href=https://authelia.${DOMAINNAME}/
+  coredns:
+    image: coredns/coredns
+    container_name: coredns
+    hostname: coredns
+    network_mode: host
+    restart: unless-stopped
+    command: -conf /data/Corefile
+    ports:
+    - ${CORE_DNS_PORT}:53/tcp
+    - ${CORE_DNS_PORT}:53/udp
+    - ${CORE_DNS_PORT}:53/tcp
+    - ${CORE_DNS_PORT}:53/udp
+    environment:
+      HOST_IP: ${HOST_IP}
+      HOSTNAME: ${HOSTNAME}
+      DOMEXT: ${DOMEXT}
+      DOMAINNAME: ${DOMAINNAME}
+      DNS_IP: ${DNS_IP}
+      DNS_EXPIRATION_TIME: ${DNS_EXPIRATION_TIME}
+    volumes:
+    - ${CONFIG_DIR}/coredns/config:/config/
+    - ${CONFIG_DIR}/coredns/Corefile:/data/Corefile
+    labels:
+    - homepage.name=CoreDNS
+    - homepage.group=Background Services
+    - homepage.icon=coredns
+    - homepage.description=Local Name Service
+  mkcert:
+    image: postgres:15
+    container_name: miniflux-db
+    networks:
+    - traefik_network
+    environment:
+    - POSTGRES_USER=miniflux
+    - POSTGRES_PASSWORD=$DATABASE_PASSWORD
+    - POSTGRES_DB=miniflux-db
+    healthcheck:
+      test:
+      - CMD
+      - pg_isready
+      - -U
+      - miniflux
+      interval: 10s
+      start_period: 30s
+    volumes:
+    - ${CERTS_DIR}:/root/.local/share/mkcert
+    labels:
+    - homepage.name=MKCert
+    - homepage.group=Background Services
+    - homepage.icon=/images/lock.png
+    - homepage.description=Localhost cert management
+  openldap:
+    image: osixia/openldap:latest
+    container_name: openldap
+    hostname: openldap
+    restart: unless-stopped
+    command: --copy-service
+    networks:
+    - traefik_network
+    environment:
+      TZ: ${TZ}
+      LDAP_ORGANISATION: ${LDAP_ORGANISATION}
+      LDAP_DOMAIN: ${DOMAINNAME}
+      LDAP_BASE_DN: ${LDAP_BASE_DN}
+      LDAP_ADMIN_USERNAME: ${LDAP_ADMIN_USER}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      LDAP_CONFIG_PASSWORD: ${LDAP_CONFIG_PASSWORD}
+      LDAP_TLS_VERIFY_CLIENT: ${LDAP_TLS_VERIFY_CLIENT}
+      LDAP_READONLY_USER: ${LDAP_READONLY_USER}
+      LDAP_READONLY_USER_USERNAME: ${LDAP_READONLY_USER_USERNAME}
+      LDAP_READONLY_USER_PASSWORD: ${LDAP_READONLY_USER_PASSWORD}
+      LDAP_RFC2307BIS_SCHEMA: ${LDAP_RFC2307BIS_SCHEMA}
+      LDAP_BACKEND: ${LDAP_BACKEND}
+      LDAP_REPLICATION: ${LDAP_REPLICATION}
+      KEEP_EXISTING_CONFIG: false
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: true
+      LDAP_PORT_NUMBER: ${OPENLDAP_PORT}
+      LDAP_LDAPS_PORT_NUMBER: ${OPENLDAP_LDAPS_PORT}
+    volumes:
+    - ${CONFIG_DIR}/openldap/ldap/db:/var/lib/ldap:rw
+    - ${CONFIG_DIR}/openldap/ldap/conf:/etc/ldap/slapd.d:rw
+    labels:
+    - homepage.name=OpenLDAP
+    - homepage.group=Databases
+    - homepage.icon=openldap
+    - homepage.description=Users and Groups Service
+  sablier-migrate:
+    build:
+      context: sablier-migrate
+      target: builder
+    container_name: sablier-migrate
+    hostname: sablier-migrate
+    stop_signal: SIGINT
+    volumes:
+    - ./:/docker
+    environment:
+    - PYTHONUNBUFFERED=1
+    - TZ=${TZ}
+  lostack:
+    container_name: lostack
+    hostname: lostack
+    networks:
+      traefik_network: {}
+    stop_signal: SIGINT
+    depends_on:
+    - lostack-db
+    environment:
+    - PYTHONUNBUFFERED=1
+    - TZ=${TZ}
+    - DB_HOST=lostack-db
+    - DB_PORT=3306
+    - DB_USER=sablier
+    - DB_PASSWORD=${DATABASE_PASSWORD}
+    - DB_NAME=lostack-db
+    - DOMAINNAME=${DOMAINNAME}
+    - DOMAIN_NAME=${DOMAINNAME}
+    - SABLIER_URL=http://sablier:10000
+    - SABLIER_DEFAULT_SESSION_DURATION=${SABLIER_DEFAULT_SESSION_DURATION}
+    - SABLIER_DEFAULT_THEME=${SABLIER_DEFAULT_THEME}
+    - TRUSTED_PROXY_IPS=${SABLIER_TRUSTED_PROXY_IPS}
+    build:
+      context: lostack
+      target: builder
+    volumes:
+    - ${DOCKER_SOCKET}:/var/run/docker.sock
+    - ${CONFIG_DIR}/sablier/sablier-dynamic.yml:/dynamic.yml:rw
+    - ./:/docker
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.lostack.rule=Host(`lostack.${DOMAINNAME}`)
+    - traefik.http.services.lostack.loadbalancer.server.port=80
+    - traefik.docker.network=traefik_network
+    - homepage.name=LoStack
+    - homepage.group=Admin
+    - homepage.icon=mdi-rocket-launch
+    - homepage.description=Container Auto-Start
+    - homepage.href=https://lostack.${DOMAINNAME}/
+  lostack-db:
+    image: mariadb:10.11
+    container_name: lostack-db
+    hostname: lostack-sb
+    networks:
+      traefik_network: {}
+    environment:
+    - MYSQL_ROOT_PASSWORD=${SABLIER_STATION_DB_ROOT_PASSWORD}
+    - MYSQL_DATABASE=lostack-db
+    - MYSQL_USER=sablier
+    - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+    - TZ=${TZ}
+    volumes:
+    - ${APPDATA_DIR}/lostack-db/:/var/lib/mysql
+    labels:
+    - homepage.name=LoStack MariaDB
+    - homepage.group=Databases
+    - homepage.icon=mariadb
+    - homepage.description=Container Auto-Start
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    hostname: traefik
+    restart: unless-stopped
+    networks:
+      traefik_network:
+        aliases:
+        - traefik
+        - traefik.${DOMAINNAME}
+        - ${AUTHELIA_PREFIX}.${DOMAINNAME}
+    dns:
+    - ${DNS_IP}
+    - ${HOST_IP}
+    environment:
+      TZ: ${TZ}
+      DOMAINNAME: ${DOMAINNAME}
+    command:
+    - --global.sendAnonymousUsage=false
+    - --global.checkNewVersion=false
+    - --log.level=DEBUG
+    - --log.filepath=logs/traefik.log
+    - --api.dashboard=true
+    - --entrypoints.https.address=:443
+    - --entrypoints.https.http.middlewares=authelia@docker
+    - --entrypoints.https.http.tls=true
+    - --entrypoints.http.address=:80
+    - --entrypoints.http.http.middlewares=redirect-to-https
+    - --providers.docker.endpoint=unix:///var/run/docker.sock
+    - --providers.docker.exposedByDefault=false
+    - --providers.file.directory=/dynamic/
+    - --providers.file.watch=true
+    - --experimental.localPlugins.sablier.modulename=github.com/sablierapp/sablier
+    ports:
+    - ${TRAEFIK_PORT_HTTP}:80
+    - ${TRAEFIK_PORT_HTTPS}:443
+    volumes:
+    - ${DOCKER_SOCKET}:/var/run/docker.sock:ro
+    - ${CERTS_DIR}:/certs:ro
+    - ${CONFIG_DIR}/traefik/dynamic.yml:/dynamic/dynamic.yml
+    - ${CONFIG_DIR}/sablier/sablier-dynamic.yml:/dynamic/sablier-dynamic.yml
+    - ${LOGS_DIR}/traefik:/logs/
+    - ./plugins-local:/plugins-local
+    labels:
+    - traefik.enable=true
+    - traefik.tls.options.modern.minVersion=VersionTLS13
+    - traefik.tls.options.intermediate.minVersion=VersionTLS12
+    - traefik.tls.options.intermediate.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - traefik.http.routers.api.middlewares=authelia@docker
+    - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+    - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
+    - traefik.http.routers.traefik.tls.domains[1].main=${DOMAINNAME}
+    - traefik.http.routers.traefik.tls.domains[1].sans=*.${DOMAINNAME}
+    - traefik.http.routers.api.rule=Host(`traefik.${DOMAINNAME}`)
+    - traefik.http.routers.api.service=api@internal
+    - traefik.http.routers.api.tls=true
+    - traefik.http.routers.api.tls.options=default
+    - traefik.http.middlewares.portainertheme.plugin.themepark.app=portainer
+    - traefik.http.middlewares.portainertheme.plugin.themepark.theme=nord
+    - traefik.http.middlewares.filebrowsertheme.plugin.themepark.app=filebrowser
+    - traefik.http.middlewares.filebrowsertheme.plugin.themepark.theme=nord
+    - traefik.http.middlewares.dozzletheme.plugin.themepark.app=dozzle
+    - traefik.http.middlewares.dozzletheme.plugin.themepark.theme=nord
+    - traefik.http.middlewares.dozzle-csp.headers.customResponseHeaders.X-WebKit-CSP=
+    - traefik.http.middlewares.dozzle-csp.headers.customResponseHeaders.Content-Security-Policy=
+    - homepage.name=Traefik Dashboard
+    - homepage.group=Admin
+    - homepage.icon=traefik
+    - homepage.description=Traefik proxy dashboard
+    - homepage.href=https://traefik.${DOMAINNAME}/
+networks:
+  traefik_network:
+    driver: bridge
+    name: traefik_network
+    external: false

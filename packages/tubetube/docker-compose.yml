@@ -1,0 +1,35 @@
+services:
+  tubetube:
+    image: ghcr.io/mattblackonly/tubetube:latest
+    container_name: tubetube
+    environment:
+    - THREAD_COUNT=1
+    - PUID=1000
+    - PGID=1000
+    restart: unless-stopped
+    hostname: tubetube
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=YouTube Downloader
+    - homepage.group=Video Downloaders
+    - homepage.href=https://tubetube.${DOMAINNAME}/
+    - homepage.icon=mdi-youtube
+    - homepage.name=Tubetube
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=tubetube
+    - lostack.enable=true
+    # - traefik.http.routers.tubetube.rule=Host(`tubetube.${DOMAINNAME}`)
+    - lostack.port=6543
+    - lostack.tags=downloader,audio,videos,podcasts,music,mp3,audiobooks
+    - lostack.project_url=https://github.com/MattBlackOnly/TubeTube
+    - lostack.details=TubeTube is a simple YouTube downloader.
+    volumes:
+    - ${MEDIA_DIR}/downloads/youtube/general:/data/General
+    - ${MEDIA_DIR}/downloads/youtube/music:/data/Music
+    - ${MEDIA_DIR}/downloads/youtube/podcasts:/data/Podcast
+    - ${MEDIA_DIR}/downloads/youtube/videos:/data/Video
+    - ${MEDIA_DIR}/downloads/youtube/temp:/data/Video
+    - ${APPDATA_DIR}/tubetube:/config

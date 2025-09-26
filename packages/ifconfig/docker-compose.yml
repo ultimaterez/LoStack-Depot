@@ -1,0 +1,26 @@
+services:
+  ifconfig:
+    image: georgyo/ifconfig.io
+    environment:
+      HOSTNAME: ifconfig.io
+    restart: unless-stopped
+    container_name: ifconfig
+    hostname: ifconfig
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=IP Info Tool
+    - homepage.group=IP & Domain
+    - homepage.href=https://ifconfig.${DOMAINNAME}/
+    - homepage.icon=mdi-domain
+    - homepage.name=Ifconfig.io
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,tools
+    - lostack.project_url=https://github.com/georgyo/ifconfig.io
+    - lostack.details=Inspired by ifconfig.me, but designed for pure speed. A single server can do 18,000 requests per seconds while only consuming 50megs of ram.
+    - lostack.autostart=true
+    - lostack.group=ifconfig
+    - lostack.enable=true
+    # - traefik.http.routers.ifconfig.rule=Host(`ifconfig.${DOMAINNAME}`)
+    - lostack.port=8080

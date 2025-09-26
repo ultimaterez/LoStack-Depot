@@ -1,0 +1,26 @@
+services:
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:latest
+    container_name: thelounge
+    restart: always
+    hostname: thelounge
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=IRC Web Client
+    - homepage.group=IRC
+    - homepage.href=https://thelounge.${DOMAINNAME}/
+    - homepage.icon=thelounge
+    - homepage.name=Thelounge
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=irc,chat
+    - lostack.project_url=https://github.com/thelounge/thelounge
+    - lostack.details=Modern, responsive, cross-platform, self-hosted web IRC client
+    - lostack.autostart=true
+    - lostack.group=thelounge
+    - lostack.enable=true
+    # - traefik.http.routers.thelounge.rule=Host(`thelounge.${DOMAINNAME}`)
+    - lostack.port=9000
+    volumes:
+    - ${APPDATA_DIR}/thelounge:/var/opt/thelounge

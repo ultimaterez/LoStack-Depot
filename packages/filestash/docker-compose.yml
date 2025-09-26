@@ -1,0 +1,47 @@
+services:
+  filestash:
+    image: machines/filestash:latest
+    container_name: filestash
+    hostname: filestash
+    restart: always
+    depends_on:
+    - filestash-onlyoffice
+    environment:
+    - APPLICATION_URL=filestash.${DOMAINNAME}
+    - CANARY=true
+    - ONLYOFFICE_URL=http://filestash-onlyoffice
+    volumes:
+    - ${APPDATA_DIR}/filestash:/app/data/state/
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.filestash.rule=Host(`filestash.${DOMAINNAME}`)
+    - lostack.port=8334
+    - homepage.name=FileStash
+    - homepage.group=File Management
+    - homepage.icon=filestash
+    - homepage.description=File Transfers
+    - homepage.href=https://filestash.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=filestash
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing,server,ftp,smb,nfs,webdav,git,ldap
+    - lostack.project_url=https://github.com/mickael-kerjean/filestash
+    - lostack.details=A Dropbox-like file manager that let you manage your data anywhere it is located. FTP • FTPS • SFTP • WebDAV • Git • S3 • NFS • SMB • Artifactory • LDAP • Mysql Storj • CardDAV • CalDAV • Backblaze B2 • Minio Dropbox • Google Drive
+  filestash-onlyoffice:
+    image: onlyoffice/documentserver
+    container_name: filestash-onlyoffice
+    hostname: filestash-onlyoffice
+    restart: always
+    security_opt:
+    - seccomp:unconfined
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.filestash-onlyoffice.rule=Host(`filestash-onlyoffice.${DOMAINNAME}`)
+    - homepage.name=FileStash OnlyOffice
+    - homepage.group=Services
+    - homepage.icon=onlyoffice
+    - homepage.description=File Transfers
+    - homepage.href=https://filestash-onlyoffice.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=filestash

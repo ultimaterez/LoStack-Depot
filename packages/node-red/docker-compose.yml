@@ -1,0 +1,28 @@
+services:
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+    - TZ=${TZ}
+    restart: always
+    container_name: node-red
+    hostname: node-red
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=IoT Flow editor
+    - homepage.group=IoT
+    - homepage.href=https://node-red.${DOMAINNAME}/
+    - homepage.icon=node-red
+    - homepage.name=Node-red
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=automation,tools,productivity
+    - lostack.project_url=https://github.com/node-red/node-red
+    - lostack.details=Low-code programming for event-driven applications.
+    - lostack.autostart=true
+    - lostack.group=node-red
+    - lostack.enable=true
+    # - traefik.http.routers.node-red.rule=Host(`node-red.${DOMAINNAME}`)
+    - lostack.port=1880
+    volumes:
+    - ${APPDATA_DIR}/node-red:/data

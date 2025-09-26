@@ -1,0 +1,28 @@
+services:
+  recipya:
+    image: reaper99/recipya:nightly
+    container_name: recipya
+    environment:
+    - RECIPYA_SERVER_PORT=8078
+    restart: unless-stopped
+    hostname: recipya
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Recipe Manager
+    - homepage.group=Recipe Managment
+    - homepage.href=https://recipya.${DOMAINNAME}/
+    - homepage.icon=recipya
+    - homepage.name=Recipya
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=recipes
+    - lostack.project_url=https://github.com/reaper47/recipya
+    - lostack.details=A clean, simple and powerful recipe manager web application for unforgettable family recipes, empowering you to curate and share your favorite recipes. It is focused on simplicity for the whole family to enjoy.
+    - lostack.autostart=true
+    - lostack.group=recipya
+    - lostack.enable=true
+    # - traefik.http.routers.recipya.rule=Host(`recipya.${DOMAINNAME}`)
+    - lostack.port=8078
+    volumes:
+    - ${APPDATA_DIR}/recipya:/root/.config/Recipya

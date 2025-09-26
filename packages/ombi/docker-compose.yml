@@ -1,0 +1,30 @@
+services:
+  ombi:
+    image: lscr.io/linuxserver/ombi:latest
+    container_name: ombi
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: ombi
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Media Request Tool
+    - homepage.group=Media
+    - homepage.href=https://ombi.${DOMAINNAME}/
+    - homepage.icon=ombi
+    - homepage.name=Ombi
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=requester,media,videos,movies,tv
+    - lostack.project_url=https://github.com/Ombi-app/Ombi
+    - lostack.details=Ombi is your friendly media request tool, automatically syncs with your media servers! Don't worry, it's grandma friendly, and more importantly; has wife approval certification
+    - lostack.autostart=true
+    - lostack.group=ombi
+    - lostack.enable=true
+    # - traefik.http.routers.ombi.rule=Host(`ombi.${DOMAINNAME}`)
+    - lostack.port=3579
+    volumes:
+    - ${APPDATA_DIR}/ombi:/config

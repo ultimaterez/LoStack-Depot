@@ -1,0 +1,30 @@
+services:
+  mikochi:
+    image: zer0tonin/mikochi:latest
+    environment:
+    - DATA_DIR=/data
+    - USERNAME=admin
+    - PASSWORD=${ADMIN_PASSWORD}
+    restart: unless-stopped
+    container_name: mikochi
+    hostname: mikochi
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Remote File Browser
+    - homepage.group=File Managers
+    - homepage.href=https://mikochi.${DOMAINNAME}/
+    - homepage.icon=mdi-file-cabinet
+    - homepage.name=Mikochi
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,vlc,server
+    - lostack.project_url=https://github.com/zer0tonin/Mikochi
+    - lostack.details=Mikochi is a remote file browser, for use in self-hosted servers / NAS. It allows you to browse remote folders, upload files, delete, rename, download and stream files to VLC/mpv.
+    - lostack.autostart=true
+    - lostack.group=mikochi
+    - lostack.enable=true
+    # - traefik.http.routers.mikochi.rule=Host(`mikochi.${DOMAINNAME}`)
+    - lostack.port=8080
+    volumes:
+    - ${APPDATA_DIR}/mikochi:/data

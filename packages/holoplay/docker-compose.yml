@@ -1,0 +1,24 @@
+services:
+  holoplay:
+    image: spout8301/holoplay:latest
+    restart: unless-stopped
+    container_name: holoplay
+    hostname: holoplay
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=YouTube Audio Player
+    - homepage.group=Media
+    - homepage.href=https://holoplay.${DOMAINNAME}/
+    - homepage.icon=mdi-music
+    - homepage.name=Holoplay
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=holoplay
+    - lostack.enable=true
+    # - traefik.http.routers.holoplay.rule=Host(`holoplay.${DOMAINNAME}`)
+    - lostack.port=3000
+    - lostack.tags=media,files,server,player
+    - lostack.project_url=https://github.com/stephane-r/holoplay-pwa
+    - lostack.details=HoloPlay is a Youtube alternative app using Invidious API. You can save music to favoris or create your playlists. This project is fully open source. If you want add more feature, PM, MR or PR are welcome!

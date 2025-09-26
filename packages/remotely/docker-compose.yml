@@ -1,0 +1,33 @@
+services:
+  remotely:
+    image: immybot/remotely:latest
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Production
+    - ASPNETCORE_HTTP_PORTS=5000
+    - Remotely_ApplicationOptions__DbProvider=SQLite
+    - Remotely_ConnectionStrings__SQLite=Data Source=/app/AppData/Remotely.db
+    - Remotely_ConnectionStrings__SQLServer=Server=(localdb)\\mssqllocaldb;Database=Remotely-Server-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true
+    - Remotely_ConnectionStrings__PostgreSQL=Server=Host=localhost;Database=Remotely;Username=postgres;
+    restart: always
+    container_name: remotely
+    hostname: remotely
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Remote Desktop Control
+    - homepage.group=Remote Access
+    - homepage.href=https://remotely.${DOMAINNAME}/
+    - homepage.icon=remotely
+    - homepage.name=Remotely
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=remote
+    - lostack.project_url=https://github.com/immense/Remotely
+    - lostack.details=A remote control and remote scripting solution, built with .NET 8, Blazor, and SignalR.
+    - lostack.autostart=true
+    - lostack.group=remotely
+    - lostack.enable=true
+    # - traefik.http.routers.remotely.rule=Host(`remotely.${DOMAINNAME}`)
+    - lostack.port=5000
+    volumes:
+    - ${APPDATA_DIR}/remotely:/app/AppData

@@ -1,0 +1,24 @@
+services:
+  imgproxy:
+    image: darthsim/imgproxy
+    restart: always
+    container_name: imgproxy
+    hostname: imgproxy
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Imager Converter Proxy
+    - homepage.group=Proxy
+    - homepage.href=https://imgproxy.${DOMAINNAME}/
+    - homepage.icon=mdi-move-resize
+    - homepage.name=Imgproxy
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,proxy,tools,image
+    - lostack.project_url=https://awesome-docker-compose.com/apps/proxy/imgproxy
+    - lostack.details=Fast and secure standalone server for resizing and converting remote images. It works great when you need to resize multiple images on the fly without preparing a ton of cached resized images or re-doing it every time the design changes.
+    - lostack.autostart=true
+    - lostack.group=imgproxy
+    - lostack.enable=true
+    # - traefik.http.routers.imgproxy.rule=Host(`imgproxy.${DOMAINNAME}`)
+    - lostack.port=8080

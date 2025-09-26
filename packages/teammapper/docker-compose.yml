@@ -1,0 +1,61 @@
+services:
+  teammapper:
+    image: ghcr.io/b310-digital/teammapper:latest
+    container_name: teammapper
+    hostname: teammapper
+    networks:
+    - traefik_network
+    environment:
+      MODE: PROD
+      BINDING: 0.0.0.0
+      POSTGRES_DATABASE: teammapper-db
+      POSTGRES_HOST: teammapper-postgres
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_PORT: 5432
+      POSTGRES_SSL: false
+      POSTGRES_SSL_REJECT_UNAUTHORIZED: false
+      POSTGRES_USER: teammapper-user
+      POSTGRES_QUERY_TIMEOUT: 100000
+      POSTGRES_STATEMENT_TIMEOUT: 100000
+      DELETE_AFTER_DAYS: 999999
+    depends_on:
+    - teammapper-postgres
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.teammapper.rule=Host(`teammapper.${DOMAINNAME}`)
+    - lostack.port=3000
+    - homepage.name=TeamMapper
+    - homepage.group=Apps
+    - homepage.icon=mdi-brain
+    - homepage.description=Mindmap Diagram
+    - homepage.href=https://teammapper.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=teammapper
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=tools,productivity,diagrams
+    - lostack.project_url=https://github.com/b310-digital/teammapper
+    - lostack.details=Mindmapping made simple! Host and create your own mindmaps. Share your mindmap sessions with your team and collaborate on mindmaps.
+  teammapper-postgres:
+    image: postgres:12-alpine
+    container_name: teammapper-postgres
+    hostname: teammapper-postgres
+    networks:
+    - traefik_network
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: teammapper-db
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: teammapper-user
+    volumes:
+    - ${APPDATA_DIR}/teammapper/db:/var/lib/postgresql/data/pgdata
+    labels:
+    - homepage.name=TeamMapper Postgres DB
+    - homepage.group=Databases
+    - homepage.icon=postgres
+    - homepage.description=TeamMapper Backend DB
+    - homepage.href=https://teammapper.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=teammapper
+    - lostack.enable=true

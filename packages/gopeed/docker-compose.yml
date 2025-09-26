@@ -1,0 +1,27 @@
+services:
+  gopeed:
+    container_name: gopeed
+    image: liwei2633/gopeed
+    restart: unless-stopped
+    hostname: gopeed
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Modern Download Manager
+    - homepage.group=File Downloader
+    - homepage.href=https://gopeed.${DOMAINNAME}/
+    - homepage.icon=mdi-download-multiple
+    - homepage.name=Gopeed
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=downloader,bittorrent
+    - lostack.project_url=https://github.com/GopeedLab/gopeed
+    - lostack.details=Gopeed (full name Go Speed), a high-speed downloader developed by Golang + Flutter, supports (HTTP, BitTorrent, Magnet) protocol, and supports all platforms. In addition to basic download functions, Gopeed is also a highly customizable downloader that supports implementing more features through integration with APIs or installation and development of extensions.
+    - lostack.autostart=true
+    - lostack.group=gopeed
+    - lostack.enable=true
+    # - traefik.http.routers.gopeed.rule=Host(`gopeed.${DOMAINNAME}`)
+    - lostack.port=9999
+    volumes:
+    - ${APPDATA_DIR}/gopeed/downloads:/root/Downloads
+    - ${APPDATA_DIR}/gopeed/storage:/app/storage

@@ -1,0 +1,31 @@
+services:
+  mstream:
+    image: lscr.io/linuxserver/mstream:latest
+    container_name: mstream
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: mstream
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Music Streaming Server
+    - homepage.group=Media
+    - homepage.href=https://mstream.${DOMAINNAME}/
+    - homepage.icon=mstream
+    - homepage.name=Mstream
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,audio,media,player,mp3
+    - lostack.project_url=https://github.com/IrosTheBeggar/mStream
+    - lostack.details=mStream is a personal music streaming server. You can use mStream to stream your music from your home computer to any device, anywhere.
+    - lostack.autostart=true
+    - lostack.group=mstream
+    - lostack.enable=true
+    # - traefik.http.routers.mstream.rule=Host(`mstream.${DOMAINNAME}`)
+    - lostack.port=3000
+    volumes:
+    - ${APPDATA_DIR}/mstream:/config
+    - ${MEDIA_DIR}/music:/music

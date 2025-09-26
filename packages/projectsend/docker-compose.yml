@@ -1,0 +1,32 @@
+services:
+  projectsend:
+    image: lscr.io/linuxserver/projectsend:latest
+    container_name: projectsend
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    - MAX_UPLOAD=5000
+    restart: unless-stopped
+    hostname: projectsend
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=File Share with Pipes
+    - homepage.group=File Transfer
+    - homepage.href=https://projectsend.${DOMAINNAME}/
+    - homepage.icon=projectsend
+    - homepage.name=Projectsend
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=sharing,files,productivity
+    - lostack.project_url=https://github.com/projectsend/projectsend
+    - lostack.details=ProjectSend is a free, open source software that lets you share files with your clients, focused on ease of use and privacy. It supports clients groups, system users roles, statistics, multiple languages, detailed logs... and much more!
+    - lostack.autostart=true
+    - lostack.group=projectsend
+    - lostack.enable=true
+    # - traefik.http.routers.projectsend.rule=Host(`projectsend.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${APPDATA_DIR}/projectsend:/config
+    - ${MEDIA_DIR}:/data

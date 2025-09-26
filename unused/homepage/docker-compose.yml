@@ -1,0 +1,31 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    hostname: homepage
+    restart: unless-stopped
+    user: root
+    networks:
+      - traefik_network
+    environment:
+      TZ: ${TZ}
+      HOMEPAGE_ALLOWED_HOSTS: ${DOMAINNAME}
+    volumes:
+      - ${CONFIG_DIR}/homepage:/app/config
+      - ${LOGS_DIR}/homepage:/app/config/logs
+      - ${CONFIG_DIR}/homepage/images:/app/public/images
+      - ${DOCKER_SOCKET}:/var/run/docker.sock
+    labels:
+      - "homepage.name=Homepage"
+      - "homepage.group=Services"
+      - "homepage.icon=homepage"
+      - "homepage.description=Environment Dashboard"
+      - "homepage.href=https://${DOMAINNAME}/"
+      - "lostack.autostart=true"
+      - "lostack.group=homepage"
+      - "lostack.duration=45m"
+      - "lostack.primary=true"
+      - "lostack.enable=true"
+      - "lostack.port=3000"
+      # Host on ${DOMAINNAME} rather than homepage.${DOMAINNAME}
+      - "lostack.root=true" 

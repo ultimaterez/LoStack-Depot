@@ -1,0 +1,35 @@
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    hostname: navidrome
+    networks:
+    - traefik_network
+    restart: unless-stopped
+    environment:
+      -ND_SCANSCHEDULE: 1h
+      -ND_LOGLEVEL: info
+      -ND_SESSIONTIMEOUT: 24h
+      -ND_BASEURL: ''
+      -PUID: 1024
+      -PGID: 101
+      -TZ: ${TZ}
+    volumes:
+    - ${APPDATA_DIR}/navidrome:/data
+    - ${MEDIA_DIR}/music:/music:ro
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.navidrome.rule=Host(`navidrome.${DOMAINNAME}`)
+    - lostack.port=4533
+    - homepage.name=Navidrome
+    - homepage.group=Media
+    - homepage.icon=navidrome
+    - homepage.description=Music Player
+    - homepage.href=https://navidrome.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=navidrome
+    - lostack.default_duration=1h
+    - lostack.primary=true
+    - lostack.tags=server,audio,music,media,mp3,player
+    - lostack.project_url=https://github.com/navidrome/navidrome
+    - lostack.details=Navidrome is an open source web-based music collection server and streamer. It gives you freedom to listen to your music collection from any browser or mobile device. It's like your personal Spotify!

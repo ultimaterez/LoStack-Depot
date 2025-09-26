@@ -1,0 +1,24 @@
+services:
+  rustpad:
+    container_name: rustpad
+    hostname: rustpad
+    image: ekzhang/rustpad
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Collaborative Text Editor
+    - homepage.group=Pastebins
+    - homepage.href=https://rustpad.${DOMAINNAME}/
+    - homepage.icon=mdi-note-edit-outline
+    - homepage.name=Rustpad
+    - lostack.default_duration=15m
+    - lostack.autostart=true
+    - lostack.group=rustpad
+    - lostack.primary=true
+    - lostack.tags=editor,code,tools
+    - lostack.project_url=https://github.com/ekzhang/rustpad
+    - lostack.details=Efficient and minimal collaborative code editor, self-hosted, no database required
+    - lostack.enable=true
+    # - traefik.http.routers.rustpad.rule=Host(`rustpad.${DOMAINNAME}`)
+    - lostack.port=3030

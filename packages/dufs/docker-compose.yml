@@ -1,0 +1,27 @@
+services:
+  dufs:
+    image: sigoden/dufs
+    command: /data -A
+    restart: unless-stopped
+    container_name: dufs
+    hostname: dufs
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=File Server Multitool
+    - homepage.group=File Managers
+    - homepage.href=https://dufs.${DOMAINNAME}/
+    - homepage.icon=mdi-file-cabinet
+    - homepage.name=Dufs
+    - lostack.default_duration=1m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=dufs
+    - lostack.enable=true
+    # - traefik.http.routers.dufs.rule=Host(`dufs.${DOMAINNAME}`)
+    - lostack.port=5000
+    - lostack.details=A file server that supports static serving, uploading, searching, accessing control, webdav…
+    - lostack.tags=files,server
+    - lostack.project_url=https://awesome-docker-compose.com/apps/file-transfer---web-based-file-managers/dufs
+    volumes:
+    - ${APPDATA_DIR}/dufs:/data

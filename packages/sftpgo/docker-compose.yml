@@ -1,0 +1,24 @@
+services:
+  sftpgo:
+    container_name: sftpgo
+    image: drakkan/sftpgo:edge
+    restart: unless-stopped
+    hostname: sftpgo
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Flexible SFTP Server
+    - homepage.group=FTP
+    - homepage.href=https://sftpgo.${DOMAINNAME}/
+    - homepage.icon=sftpgo
+    - homepage.name=Sftpgo
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=sftp,http,https,ftp,ftps,webdav,s3
+    - lostack.project_url=https://github.com/drakkan/sftpgo
+    - lostack.details=Full-featured and highly configurable SFTP, HTTP/S, FTP/S and WebDAV server - S3, Google Cloud Storage, Azure Blob
+    - lostack.autostart=true
+    - lostack.group=sftpgo
+    - lostack.enable=true
+    # - traefik.http.routers.sftpgo.rule=Host(`sftpgo.${DOMAINNAME}`)
+    - lostack.port=8080

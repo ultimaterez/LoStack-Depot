@@ -1,0 +1,53 @@
+services:
+  arcane:
+    image: ghcr.io/ofkm/arcane:latest
+    container_name: arcane
+    hostname: arcane
+    networks:
+      - traefik_network
+    environment:
+      - APP_ENV=production
+      - PUID=1000
+      - PGID=1000
+    restart: unless-stopped
+    volumes:
+      - ${APPDATA_DIR}/arcane/data:/app/data
+      - ${APPDATA_DIR}/arcane/secrets:/lostack_secrets
+      - ${DOCKER_SOCKET}:/var/run/docker.sock
+    entrypoint: |
+      sh -c '
+      SECRET_FILE="/lostack_secrets/arcane.session"
+      if [ -f "$$SECRET_FILE" ]; then
+        echo "Loading existing PUBLIC_SESSION_SECRET from $$SECRET_FILE..."
+        export PUBLIC_SESSION_SECRET=$$(cat "$$SECRET_FILE")
+      else
+        echo "PUBLIC_SESSION_SECRET not found, generating a secure random secret..."
+        export PUBLIC_SESSION_SECRET=$$(node -e "console.log(require(\"crypto\").randomBytes(64).toString(\"hex\"))")
+        echo "$$PUBLIC_SESSION_SECRET" > "$$SECRET_FILE"
+        echo "PUBLIC_SESSION_SECRET saved to $$SECRET_FILE (first 16 chars: $${PUBLIC_SESSION_SECRET:0:16})"
+      fi
+
+      if [ $${#PUBLIC_SESSION_SECRET} -lt 32 ]; then
+        echo "Warning: PUBLIC_SESSION_SECRET is shorter than recommended (32+ characters)"
+      fi
+
+      echo "Starting Arcane..."
+      exec /usr/local/bin/entrypoint.sh node build
+      '
+    labels:
+      - "lostack.enable=true"
+      # - "traefik.http.routers.arcane.rule=Host(`arcane.${DOMAINNAME}`)"
+      - lostack.port=3000
+      - "homepage.name=Arcane"
+      - "homepage.group=Admin"
+      - "homepage.icon=arcane"
+      - "homepage.description=Docker Manager"
+      - "homepage.href=https://arcane.${DOMAINNAME}/"
+      - "lostack.autostart=true"
+      - "lostack.group=arcane"
+      - "lostack.default_duration=15m"
+      - "lostack.primary=true"
+      - lostack.details=Arcane is a modern, web-based interface for managing your Docker environment, built with SvelteKit.
+      - lostack.tags=docker,administration
+      - lostack.project_url=https://github.com/ofkm/arcane
+      - lostack.enable=true

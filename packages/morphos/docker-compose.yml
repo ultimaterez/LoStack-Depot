@@ -1,0 +1,27 @@
+services:
+  morphos:
+    image: ghcr.io/danvergara/morphos-server:latest
+    container_name: morphos
+    hostname: morphos
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    volumes:
+    - ${CONFIG_DIR}/morphos:/tmp:rw
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.morphos.rule=Host(`morphos.${DOMAINNAME}`)
+    - lostack.port=8080
+    - homepage.name=Morphos
+    - homepage.group=File Conversion
+    - homepage.icon=morphos
+    - homepage.description=File Conversion
+    - homepage.href=https://morphos.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=morphos
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,converter,server
+    - lostack.project_url=https://github.com/danvergara/morphos
+    - lostack.details=Self-hosted file converter server
+    

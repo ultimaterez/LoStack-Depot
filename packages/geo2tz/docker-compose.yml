@@ -1,0 +1,24 @@
+services:
+  geo2tz:
+    container_name: geo2tz
+    image: ghcr.io/noandrea/geo2tz:latest
+    restart: unless-stopped
+    hostname: geo2tz
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=TZ from Geo Coordinates
+    - homepage.group=Maps and GPS
+    - homepage.href=https://geo2tz.${DOMAINNAME}/
+    - homepage.icon=mdi-earth
+    - homepage.name=Geo2tz
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=geo2tz
+    - lostack.enable=true
+    # - traefik.http.routers.geo2tz.rule=Host(`geo2tz.${DOMAINNAME}`)
+    - lostack.port=2004
+    - lostack.tags=gps,timezone,maps
+    - lostack.project_url=https://github.com/noandrea/geo2tz
+    - lostack.details=A self-host-able service to get the timezone given geo-coordinates (lat/lng)

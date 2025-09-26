@@ -1,0 +1,23 @@
+services:
+  sablier:
+    image: sablierapp/sablier:latest
+    container_name: sablier
+    hostname: sablier
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    command:
+    - start
+    - --provider.name=docker
+    - --logging.level=debug
+    volumes:
+    - ${DOCKER_SOCKET}:/var/run/docker.sock
+    labels:
+    - homepage.name=Sablier
+    - homepage.group=Background Services
+    - homepage.icon=mdi-autorenew
+    - homepage.description=Auto-Start Containers
+    - homepage.href=https://sablier.${DOMAINNAME}/
+    - lostack.primary=false
+    - sablier.enable=false
+    - sablier.group=sablier

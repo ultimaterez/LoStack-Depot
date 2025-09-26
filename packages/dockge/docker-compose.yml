@@ -1,0 +1,31 @@
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    volumes:
+      - ${DOCKER_SOCKET}:/var/run/docker.sock
+      - ${APPDATA_DIR}/dockge:/app/data
+      - ./:/opt/stacks
+    environment:
+      - TZ=${TZ}
+      - DOCKGE_STACKS_DIR=/opt/stacks
+    container_name: dockge
+    hostname: dockge
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Docker Manager
+      - homepage.group=dockge
+      - homepage.href=https://dockge.${DOMAINNAME}/
+      - homepage.icon=dockge
+      - homepage.name=Dockge
+      - lostack.default_duration=15m
+      - lostack.primary=true
+      - lostack.tags=administration,docker,compose
+      - lostack.project_url=https://github.com/louislam/dockge
+      - lostack.details=A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager. WARNING! DOCKGE_ENABLE_CONSOLE is enabled by default. Edit the compose file if you wish to disable it.
+      - lostack.autostart=true
+      - lostack.group=dockge
+      - lostack.enable=true
+      # - traefik.http.routers.dockge.rule=Host(`dockge.${DOMAINNAME}`)
+      - lostack.port=5001

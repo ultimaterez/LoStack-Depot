@@ -1,0 +1,38 @@
+services:
+  microbin:
+    image: danielszabo99/microbin:latest
+    hostname: microbin
+    container_name: microbin
+    networks:
+    - traefik_network
+    security_opt:
+    - no-new-privileges:false
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    environment:
+      MICROBIN_ADMIN_USERNAME: admin
+      MICROBIN_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      MICROBIN_PUBLIC_PATH: http://microbin.${DOMAINNAME}/
+    restart: unless-stopped
+    volumes:
+    - ${APPDATA_DIR}/microbin:/app/microbin_data:rw
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.microbin.rule=Host(`microbin.${DOMAINNAME}`)
+    - lostack.port=8080
+    - homepage.name=Microbin
+    - homepage.group=Pastebins
+    - homepage.icon=microbin
+    - homepage.description=Paste Service
+    - homepage.href=https://microbin.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=microbin
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing
+    - lostack.project_url=https://github.com/szabodanika/microbin
+    - lostack.details=MicroBin is a super tiny, feature-rich, configurable, self-contained and self-hosted paste bin web application. It is very easy to set up and use, and will only require a few megabytes of memory and disk storage. It takes only a couple minutes to set it up, why not give it a try now?

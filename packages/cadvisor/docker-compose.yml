@@ -1,0 +1,34 @@
+services:
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.50.0
+    privileged: true
+    devices:
+    - /dev/kmsg
+    restart: unless-stopped
+    hostname: cadvisor
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Container Resource Analysis
+    - homepage.group=Container Management
+    - homepage.href=https://cadvisor.${DOMAINNAME}/
+    - homepage.icon=cadvisor
+    - homepage.name=Cadvisor
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.details=Analyzes resource usage and performance characteristics of running containers.
+    - lostack.project_url=https://awesome-docker-compose.com/apps/container-management/cadvisor
+    - lostack.tags=administration,docker,tools
+    - lostack.project_url=https://hub.docker.com/r/google/cadvisor/
+    - lostack.autostart=true
+    - lostack.group=cadvisor
+    - lostack.enable=true
+    # - traefik.http.routers.cadvisor.rule=Host(`cadvisor.${DOMAINNAME}`)
+    - lostack.port=8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:ro
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    - /dev/disk/:/dev/disk:ro

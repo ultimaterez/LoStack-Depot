@@ -1,0 +1,25 @@
+services:
+  cyberchef:
+    image: mpepping/cyberchef:latest
+    container_name: cyberchef
+    hostname: cyberchef
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - lostack.enable=true
+    - traefik.http.routers.cyberchef.entrypoints=https
+    # - traefik.http.routers.cyberchef.rule=Host(`cyberchef.${DOMAINNAME}`)
+    - lostack.port=8000
+    - homepage.name=CyberChef
+    - homepage.group=Tools
+    - homepage.icon=cyberchef
+    - homepage.description=Cybersecurity Tools
+    - homepage.href=https://cyberchef.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=cyberchef
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.project_url=https://github.com/mpepping/docker-cyberchef/
+    - lostack.tags=tools,security
+    - lostack.details=CyberChef is *the* Cyber Swiss Army Knife web app for encryption, encoding, compression and data analysis.

@@ -1,0 +1,87 @@
+services:
+  manyfold:
+    image: ghcr.io/manyfold3d/manyfold:latest
+    hostname: manyfold
+    container_name: manyfold
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    cap_add:
+    - CHOWN
+    - DAC_OVERRIDE
+    - SETUID
+    - SETGID
+    environment:
+      PUID: 1000
+      PGID: 1000
+      SECRET_KEY_BASE: ${MANYFOLD_SECRET_KEY}
+      REDIS_URL: redis://manyfold-redis:6379/1
+      DATABASE_ADAPTER: postgresql
+      DATABASE_HOST: manyfold-postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: manyfold
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: manyfold
+    depends_on:
+    - manyfold-postgres
+    - manyfold-redis
+    networks:
+    - traefik_network
+    links:
+    - manyfold-postgres
+    - manyfold-redis
+    volumes:
+    - ${APPDATA_DIR}/manyfold/models:/models
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.manyfold.rule=Host(`manyfold.${DOMAINNAME}`)
+    - lostack.port=3214
+    - homepage.name=Manyfold
+    - homepage.group=File Management
+    - homepage.icon=manyfold
+    - homepage.description=3D Model Manager
+    - homepage.href=https://manyfold.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=manyfold
+    - lostack.default_duration=45m
+    - lostack.primary=true
+    - lostack.tags=models,3d printing,files,organization,productivity
+    - lostack.project_url=https://github.com/manyfold3d
+    - lostack.details=Manyfold is an open source, self-hosted web application for managing a collection of 3d models, particularly focused on 3d printing.
+  manyfold-postgres:
+    image: postgres:15
+    hostname: manyfold-postgres
+    container_name: manyfold-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: manyfold
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    networks:
+    - traefik_network
+    volumes:
+    - ${APPDATA_DIR}/manyfold/db:/var/lib/postgresql/data
+    labels:
+    - homepage.name=Manyfold Postgres DB
+    - homepage.group=Databases
+    - homepage.icon=postgres
+    - homepage.description=3D Model Manager DB
+    - lostack.autostart=true
+    - lostack.group=manyfold
+    - lostack.enable=true
+  manyfold-redis:
+    image: redis:7
+    hostname: manyfold-redis
+    container_name: manyfold-redis
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    labels:
+    - homepage.name=Manyfold Redis
+    - homepage.group=Databases
+    - homepage.icon=redis
+    - homepage.description=3D Model Manager Redis
+    - lostack.autostart=true
+    - lostack.group=manyfold
+    - lostack.enable=true

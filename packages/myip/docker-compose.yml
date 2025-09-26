@@ -1,0 +1,24 @@
+services:
+  myip:
+    container_name: myip
+    image: jason5ng32/myip:latest
+    restart: always
+    hostname: myip
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Web Security Tool
+    - homepage.group=IP & Domain
+    - homepage.href=https://myip.${DOMAINNAME}/
+    - homepage.icon=mdi-incognito
+    - homepage.name=Myip
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=security,tools,network
+    - lostack.project_url=https://github.com/jason5ng32/MyIP
+    - lostack.details=The best IP Toolbox. Easy to check what's your IPs, IP geolocation, check for DNS leaks, examine WebRTC connections, speed test, ping test, MTR test, check website availability, whois search and more!
+    - lostack.autostart=true
+    - lostack.group=myip
+    - lostack.enable=true
+    # - traefik.http.routers.myip.rule=Host(`myip.${DOMAINNAME}`)
+    - lostack.port=18966

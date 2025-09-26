@@ -1,0 +1,26 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    hostname: uptime-kuma
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Fancy Monitoring Tool
+    - homepage.group=Network Monitoring
+    - homepage.href=https://uptime-kuma.${DOMAINNAME}/
+    - homepage.icon=uptime-kuma
+    - homepage.name=Uptime-kuma
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=monitoring,dashboard
+    - lostack.project_url=https://github.com/louislam/uptime-kuma
+    - lostack.details=A fancy self-hosted monitoring tool
+    - lostack.autostart=true
+    - lostack.group=uptime-kuma
+    - lostack.enable=true
+    # - traefik.http.routers.uptime-kuma.rule=Host(`uptime-kuma.${DOMAINNAME}`)
+    - lostack.port=3001
+    volumes:
+    - ${APPDATA_DIR}/uptime-kuma:/app/data

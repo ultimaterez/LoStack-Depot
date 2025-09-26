@@ -1,0 +1,58 @@
+services:
+  cryptgeon:
+    image: cupcakearmy/cryptgeon:latest
+    depends_on:
+      - cryptgeon-redis
+    environment:
+      SIZE_LIMIT: 1024 MiB
+      TZ: ${TZ}
+      REDIS: redis://cryptgeon-redis/
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - --fail
+        - http://127.0.0.1:8000/api/live/
+      interval: 1m
+      timeout: 3s
+      retries: 2
+      start_period: 5s
+    container_name: cryptgeon
+    hostname: cryptgeon
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Secure note sharing
+      - homepage.group=Pastebins
+      - homepage.href=https://cryptgeon.${DOMAINNAME}/
+      - homepage.icon=mdi-lock
+      - homepage.name=Cryptgeon
+      - lostack.default_duration=15m
+      - lostack.autostart=true
+      - lostack.group=cryptgeon
+      - lostack.primary=true
+      - lostack.tags=files,notes
+      - lostack.details=cryptgeon is a secure, open source note / file sharing service inspired by PrivNote written in rust & svelte.
+      - lostack.project_url=https://awesome-docker-compose.com/apps/pastebins/cryptgeon
+      - lostack.enable=true
+      # - traefik.http.routers.cryptgeon.rule=Host(`cryptgeon.${DOMAINNAME}`)
+      - lostack.port=8000
+  cryptgeon-redis:
+    image: redis:7-alpine
+    environment:
+      - TZ=${TZ}
+    container_name: cryptgeon-redis
+    hostname: cryptgeon-redis
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Cryptgeon Redis
+      - homepage.group=Databases
+      - homepage.href=https://cryptgeon-redis.${DOMAINNAME}/
+      - homepage.icon=redis
+      - homepage.name=Cryptgeon Redis
+      - lostack.autostart=true
+      - lostack.group=cryptgeon
+      - lostack.enable=true
+      # - traefik.http.routers.cryptgeon-redis.rule=Host(`cryptgeon-redis.${DOMAINNAME}`)
+      - lostack.port=6379

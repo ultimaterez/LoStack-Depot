@@ -1,0 +1,24 @@
+services:
+  web-check:
+    container_name: web-check
+    image: lissy93/web-check
+    restart: unless-stopped
+    hostname: web-check
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Web Security Tool
+    - homepage.group=IP & Domain
+    - homepage.href=https://web-check.${DOMAINNAME}/
+    - homepage.icon=web-check
+    - homepage.name=Web-check
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=network,security,tools
+    - lostack.project_url=https://github.com/lissy93/web-check
+    - lostack.details=All-in-one OSINT tool for analysing any website. Comprehensive, on-demand open source intelligence for any website
+    - lostack.autostart=true
+    - lostack.group=web-check
+    - lostack.enable=true
+    # - traefik.http.routers.web-check.rule=Host(`web-check.${DOMAINNAME}`)
+    - lostack.port=3000

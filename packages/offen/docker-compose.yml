@@ -1,0 +1,53 @@
+services:
+  offen:
+    image: offen/offen:v1.4.2
+    environment:
+      OFFEN_DATABASE_DIALECT: postgres
+      OFFEN_DATABASE_CONNECTIONSTRING: postgres://user:${DATABASE_PASSWORD}@offen-postgres:5432/offen?sslmode=disable
+      OFFEN_DATABASE_CONNECTIONRETRIES: 10
+      TZ: ${TZ}
+    volumes:
+      - ${CERTS_DIR}/offen:/var/www/.cache
+    depends_on:
+      - offen-postgres
+    container_name: offen
+    hostname: offen
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Web Analytics
+      - homepage.group=Analytics
+      - homepage.href=https://offen.${DOMAINNAME}/
+      - homepage.icon=offen
+      - homepage.name=Offen
+      - lostack.default_duration=15m
+      - lostack.primary=true
+      - lostack.tags=analytics,privacy
+      - lostack.project_url=https://github.com/offen/offen
+      - lostack.details=Let your users access their data. Gain valuable insights at the same time. Open, lightweight, self hosted and free.
+      - lostack.autostart=true
+      - lostack.group=offen
+      - lostack.enable=true
+      # - traefik.http.routers.offen.rule=Host(`offen.${DOMAINNAME}`)
+      - lostack.port=80
+  offen-postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_DB: offen
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: ${TZ}
+    volumes:
+      - ${APPDATA_DIR}/offen/db:/var/lib/postgresql/data
+    container_name: offen-postgres
+    hostname: offen-postgres
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=postgres service
+      - homepage.group=Databases
+      - homepage.icon=postgres
+      - homepage.name=Offen Postgres
+      - lostack.autostart=true
+      - lostack.group=offen
+      - lostack.enable=true

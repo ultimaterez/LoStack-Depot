@@ -1,0 +1,69 @@
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    environment:
+      DATABASE_URL: postgresql://umami:${DATABASE_PASSWORD}@umami-postgres:5432/umami
+      DATABASE_TYPE: postgresql
+      TZ: ${TZ}
+      APP_SECRET: ${UMAMI_SECRET:-u9mCcomOYejr29TVuyWlJ46p4usHfL1L}
+    depends_on:
+      umami-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl http://localhost:3000/api/heartbeat
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    container_name: umami
+    hostname: umami
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Website Analytices
+      - homepage.group=Analytics
+      - homepage.href=https://umami.${DOMAINNAME}/
+      - homepage.icon=umami
+      - homepage.name=Umami
+      - lostack.default_duration=15m
+      - lostack.tags=analytics,privacy
+      - lostack.project_url=https://github.com/umami-software/umami
+      - lostack.details=Umami is a simple, fast, privacy-focused alternative to Google Analytics.
+      - lostack.primary=true
+      - lostack.autostart=true
+      - lostack.group=umami
+      - lostack.enable=true
+      # - traefik.http.routers.umami.rule=Host(`umami.${DOMAINNAME}`)
+      - lostack.port=3000
+
+  umami-postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: ${TZ}
+    volumes:
+      - ${APPDATA_DIR}/umami/db:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    container_name: umami-postgres
+    hostname: umami-postgres
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Umami Postgres
+      - homepage.group=Databases
+      - homepage.icon=postgres
+      - homepage.name=Umami Postgres
+      - lostack.autostart=true
+      - lostack.group=umami
+      - lostack.enable=true

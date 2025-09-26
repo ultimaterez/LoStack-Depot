@@ -1,0 +1,24 @@
+services:
+  focalboard:
+    image: mattermost/focalboard
+    restart: always
+    container_name: focalboard
+    hostname: focalboard
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Project Tracker
+    - homepage.group=Project Management
+    - homepage.href=https://focalboard.${DOMAINNAME}/
+    - homepage.icon=focalboard
+    - homepage.name=Focalboard
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=productivity,tools,planning
+    - lostack.project_url=https://github.com/mattermost-community/focalboard
+    - lostack.details=Focalboard is an open source, multilingual, self-hosted project management tool that's an alternative to Trello, Notion, and Asana.
+    - lostack.autostart=true
+    - lostack.group=focalboard
+    - lostack.enable=true
+    # - traefik.http.routers.focalboard.rule=Host(`focalboard.${DOMAINNAME}`)
+    - lostack.port=8000

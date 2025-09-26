@@ -1,0 +1,24 @@
+services:
+  piping-server-pkg:
+    image: nwtgck/piping-server
+    restart: unless-stopped
+    container_name: piping-server-pkg
+    hostname: piping-server-pkg
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=File Share with Pipes
+    - homepage.group=File Transfer
+    - homepage.href=https://piping-server-pkg.${DOMAINNAME}/
+    - homepage.icon=mdi-pipe
+    - homepage.name=Piping-server-pkg
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,files,sharing
+    - lostack.project_url=https://github.com/nwtgck/piping-server
+    - lostack.details=Infinitely transfer between every device over pure HTTP with pipes or browsers
+    - lostack.autostart=true
+    - lostack.group=piping-server-pkg
+    - lostack.enable=true
+    # - traefik.http.routers.piping-server-pkg.rule=Host(`piping-server-pkg.${DOMAINNAME}`)
+    - lostack.port=8080

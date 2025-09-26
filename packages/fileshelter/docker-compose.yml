@@ -1,0 +1,26 @@
+services:
+  fileshelter:
+    image: epoupon/fileshelter
+    restart: unless-stopped
+    container_name: fileshelter
+    hostname: fileshelter
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Easy File Sharing
+    - homepage.group=File Transfer
+    - homepage.href=https://fileshelter.${DOMAINNAME}/
+    - homepage.icon=mdi-share-all-outline
+    - homepage.name=Fileshelter
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=fileshelter
+    - lostack.enable=true
+    # - traefik.http.routers.fileshelter.rule=Host(`fileshelter.${DOMAINNAME}`)
+    - lostack.port=5091
+    - lostack.tags=files,server,sharing
+    - lostack.project_url=https://github.com/epoupon/fileshelter
+    - lostack.details=FileShelter is a self-hosted software that allows you to easily share files over the Internet. Just upload one or more files and get an URL back!
+    volumes:
+    - ${APPDATA_DIR}/fileshelter:/var/fileshelter

@@ -1,0 +1,30 @@
+services:
+  xbackbone:
+    image: lscr.io/linuxserver/xbackbone:latest
+    container_name: xbackbone
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: xbackbone
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Sharing + Integrations
+    - homepage.group=File Transfer
+    - homepage.href=https://xbackbone.${DOMAINNAME}/
+    - homepage.icon=xbackbone
+    - homepage.name=Xbackbone
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=ssl,dns
+    - lostack.project_url=https://github.com/lissy93/web-check
+    - lostack.details=Get an insight into the inner-workings of a given website. Uncover potential attack vectors, analyse server architecture, view security configurations, and learn what technologies a site is using.
+    - lostack.autostart=true
+    - lostack.group=xbackbone
+    - lostack.enable=true
+    # - traefik.http.routers.xbackbone.rule=Host(`xbackbone.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${APPDATA_DIR}/xbackbone:/config

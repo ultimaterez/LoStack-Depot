@@ -1,0 +1,28 @@
+services:
+  polaris:
+    container_name: polaris
+    image: registry.gitlab.com/connectical/container/polaris
+    restart: unless-stopped
+    hostname: polaris
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Music Browsing and Streaming
+    - homepage.group=Media
+    - homepage.href=https://polaris.${DOMAINNAME}/
+    - homepage.icon=mdi-music
+    - homepage.name=Polaris
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,media,audio,music,mp3,player
+    - lostack.project_url=https://github.com/agersant/polaris
+    - lostack.details=Polaris is a music streaming application, designed to let you enjoy your music collection from any computer or mobile device.
+    - lostack.autostart=true
+    - lostack.group=polaris
+    - lostack.enable=true
+    # - traefik.http.routers.polaris.rule=Host(`polaris.${DOMAINNAME}`)
+    - lostack.port=5050
+    volumes:
+    - ${MEDIA_DIR}/music:/music:rw
+    - ${APPDATA_DIR}/polaris/cache:/var/cache/polaris:rw
+    - ${APPDATA_DIR}/polaris/data:/var/lib/polaris:rw

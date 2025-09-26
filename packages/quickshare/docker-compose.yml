@@ -1,0 +1,29 @@
+services:
+  quickshare:
+    container_name: quickshare
+    image: hexxa/quickshare
+    environment:
+    - DEFAULTADMINPWD=${ADMIN_PASSWORD}
+    - DEFAULTADMIN=admin
+    restart: unless-stopped
+    hostname: quickshare
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Quick Simple File Sharing
+    - homepage.group=File Transfer
+    - homepage.href=https://quickshare.${DOMAINNAME}/
+    - homepage.icon=quickshare
+    - homepage.name=Quickshare
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing
+    - lostack.project_url=https://github.com/ihexxa/quickshare
+    - lostack.details=Quick and simple file sharing between different devices, built with Go, React and Typescript.
+    - lostack.autostart=true
+    - lostack.group=quickshare
+    - lostack.enable=true
+    # - traefik.http.routers.quickshare.rule=Host(`quickshare.${DOMAINNAME}`)
+    - lostack.port=8686
+    volumes:
+    - ${APPDATA_DIR}/quickshare:/quickshare/root

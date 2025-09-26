@@ -1,0 +1,34 @@
+services:
+  linx-server:
+    container_name: linx-server
+    image: andreimarcu/linx-server
+    command: "sh -c ' if [ ! -f /data/linx-server.conf ]; then\n  cat > /data/linx-server.conf\
+      \ << EOF\nbind = 127.0.0.1:8080 sitename = ${DOMAINNAME} Linx Server siteurl\
+      \ = https://linx-server.${DOMAINNAME}/ selifpath = s maxsize = 4294967296 maxexpiry\
+      \ = 86400 allowhotlink = true remoteuploads = true nologs = true force-random-filename\
+      \ = false cleanup-every-minutes = 5 EOF fi && linx-server -config /data/linx-server.conf\
+      \ '\n"
+    restart: unless-stopped
+    hostname: linx-server
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=File/Code/Media Sharing
+    - homepage.group=Media
+    - homepage.href=https://linx-server.${DOMAINNAME}/
+    - homepage.icon=mdi-cat
+    - homepage.name=Linx-server
+    - lostack.default_duration=15m
+    - lostack.tags=files,sharing,code,media
+    - lostack.project_url=https://github.com/ZizzyDizzyMC/linx-server
+    - lostack.details=Self-hosted file/code/media sharing website.
+    - lostack.primary=true
+    - lostack.autostart=true
+    - lostack.group=linx-server
+    - lostack.enable=true
+    # - traefik.http.routers.linx-server.rule=Host(`linx-server.${DOMAINNAME}`)
+    - lostack.port=8080
+    volumes:
+    - ${MEDIA_DIR}/images:/data/files/images
+    - ${APPDATA_DIR}/linx-server/meta:/data/meta
+    - ${APPDATA_DIR}/linx-server/conf/linx-server.conf:/data/linx-server.conf

@@ -1,0 +1,32 @@
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: jellyfin
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Personal Media Server
+    - homepage.group=Media
+    - homepage.href=https://jellyfin.${DOMAINNAME}/
+    - homepage.icon=jellyfin
+    - homepage.name=Jellyfin
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=media,player,server,music,movies,tv,videos,audio
+    - lostack.project_url=https://jellyfin.org/
+    - lostack.details=Jellyfin is the volunteer-built media solution that puts you in control of your media. Stream to any device from your own server, with no strings attached. Your media, your server, your way.
+    - lostack.autostart=true
+    - lostack.group=jellyfin
+    - lostack.enable=true
+    # - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${DOMAINNAME}`)
+    - lostack.port=8096
+    volumes:
+    - ${APPDATA_DIR}/jellyfin:/config
+    - ${MEDIA_DIR}/tv:/data/tvshows
+    - ${MEDIA_DIR}/movies:/data/movies

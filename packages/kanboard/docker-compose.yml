@@ -1,0 +1,28 @@
+services:
+  kanboard:
+    image: kanboard/kanboard:latest
+    restart: unless-stopped
+    container_name: kanboard
+    hostname: kanboard
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Visual Task Board
+    - homepage.group=Task Management
+    - homepage.href=https://kanboard.${DOMAINNAME}/
+    - homepage.icon=kanboard
+    - homepage.name=Kanboard
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=project,tools,dashboard
+    - lostack.project_url=https://github.com/kanboard/kanboard
+    - lostack.details=In the world of software development, maintenance mode refers to a point in a computer program's life when it has reached all of its goals and is generally considered to be "complete" and bug-free. The term can also refer to the point in a software product's evolution when it is no longer competitive with other products or current with regard to the technology environment it operates within.
+    - lostack.autostart=true
+    - lostack.group=kanboard
+    - lostack.enable=true
+    # - traefik.http.routers.kanboard.rule=Host(`kanboard.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${APPDATA_DIR}/kanboard_data:/var/www/app/data
+    - ${APPDATA_DIR}/kanboard_plugins:/var/www/app/plugins
+    - ${APPDATA_DIR}/kanboard_ssl:/etc/nginx/ssl

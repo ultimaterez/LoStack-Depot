@@ -1,0 +1,29 @@
+services:
+  picoshare:
+    image: mtlynch/picoshare
+    environment:
+    - PORT=4001
+    - PS_SHARED_SECRET=${ADMIN_PASSWORD}
+    command: -db /data/store.db
+    container_name: picoshare
+    hostname: picoshare
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Minimalist File Sharing
+    - homepage.group=File Transfer
+    - homepage.href=https://picoshare.${DOMAINNAME}/
+    - homepage.icon=mdi-share-outline
+    - homepage.name=Picoshare
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing,notes,code
+    - lostack.project_url=https://github.com/mtlynch/picoshare
+    - lostack.details=PicoShare is a minimalist service that allows you to share files easily.
+    - lostack.autostart=true
+    - lostack.group=picoshare
+    - lostack.enable=true
+    # - traefik.http.routers.picoshare.rule=Host(`picoshare.${DOMAINNAME}`)
+    - lostack.port=4001
+    volumes:
+    - ${APPDATA_DIR}/picoshare:/data

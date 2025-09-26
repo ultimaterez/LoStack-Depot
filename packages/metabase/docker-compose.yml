@@ -1,0 +1,57 @@
+services:
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    hostname: metabase
+    volumes:
+      - /dev/urandom:/dev/random:ro
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabaseappdb
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase
+      MB_DB_PASS: ${DATABASE_PASSWORD}
+      MB_DB_HOST: metabase-postgres
+      TZ: ${TZ}
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Learn from Data
+      - homepage.group=Analytics
+      - homepage.href=https://metabase.${DOMAINNAME}/
+      - homepage.icon=metabase
+      - homepage.name=Metabase
+      - lostack.default_duration=15m
+      - lostack.primary=true
+      - lostack.tags=analytics,data,productivity
+      - lostack.project_url=https://github.com/metabase/metabase
+      - lostack.details=Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data.
+      - lostack.autostart=true
+      - lostack.group=metabase
+      - lostack.enable=true
+      # - traefik.http.routers.metabase.rule=Host(`metabase.${DOMAINNAME}`)
+      - lostack.port=3000
+  metabase-postgres:
+    image: postgres:latest
+    container_name: metabase-postgres
+    hostname: metabase-postgres
+    environment:
+      POSTGRES_USER: metabase
+      POSTGRES_DB: metabaseappdb
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: ${TZ}
+    networks:
+      - traefik_network
+    labels:
+      - homepage.description=Metabase Postgres
+      - homepage.group=Databases
+      - homepage.icon=postgres
+      - homepage.name=Metabase Postgres
+      - lostack.autostart=true
+      - lostack.group=metabase
+      - lostack.enable=true

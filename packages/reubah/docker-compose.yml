@@ -1,0 +1,28 @@
+services:
+  reubah:
+    image: ghcr.io/dendianugerah/reubah:latest
+    container_name: reubah
+    hostname: reubah
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.reubah.rule=Host(`reubah.${DOMAINNAME}`)
+    - lostack.port=8081
+    - homepage.name=Reubah
+    - homepage.group=File Conversion
+    - homepage.icon=mdi-autorenew
+    - homepage.description=Bulk File Converter
+    - homepage.href=https://reubah.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=reubah
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,images,converter,tools
+    - lostack.project_url=https://github.com/dendianugerah/reubah/tree/main
+    - lostack.details=A web-based tool for processing images and converting documents with a simple interface

@@ -1,0 +1,95 @@
+services:
+  mixpost:
+    image: inovector/mixpost:latest
+    container_name: mixpost
+    hostname: mixpost
+    networks:
+    - traefik_network
+    environment:
+      APP_NAME: Mixpost
+      APP_KEY: ${MIXPOST_KEY}
+      APP_DOMAIN: mixpost.${DOMAINNAME}
+      APP_URL: https://mixpost.${DOMAINNAME}
+      DB_DATABASE: mixpost_db
+      DB_USERNAME: mixpost_user
+      DB_HOST: mixpost-mysql
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+      READIS_HOST: mixpost-redis
+      SSL_EMAIL: admin@${DOMAINNAME}
+    depends_on:
+    - mixpost-mysql
+    - mixpost-redis
+    restart: unless-stopped
+    volumes:
+    - ${APPDATA_DIR}/mixpost/app:/var/www/html/storage/app:rw
+    - ${LOGS_DIR}/mixpost:/var/www/html/storage/logs:rw
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.mixpost.rule=Host(`mixpost.${DOMAINNAME}`)
+    - lostack.port=80
+    - homepage.name=MixPost
+    - homepage.group=Apps
+    - homepage.icon=mixpost
+    - homepage.description=Social Media Manager
+    - homepage.href=https://mixpost.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=mixpost
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=social media,chat
+    - lostack.project_url=https://github.com/inovector/mixpost
+    - lostack.details=Mixpost is a robust and versatile social media management platform, designed to streamline social media operations and enhance content marketing strategies. Our platform empowers brands and businesses to effectively manage their online presence, leading them to success in the dynamic digital landscape. Mixpost's mission is to offer a comprehensive and powerful solution, enabling users to elevate their social media management and achieve tangible results.
+  mixpost-mysql:
+    image: mysql/mysql-server:8.0
+    container_name: mixpost-mysql
+    hostname: mixpost-mysql
+    networks:
+    - traefik_network
+    environment:
+      MYSQL_DATABASE: mixpost_db
+      MYSQL_USER: mixpost_user
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -p ${DATABASE_PASSWORD}
+      retries: 3
+      timeout: 5s
+    restart: unless-stopped
+    volumes:
+    - ${APPDATA_DIR}/mixpost/db:/var/lib/mysql:rw
+    labels:
+    - homepage.name=MixPost MySQL DB
+    - homepage.group=Databases
+    - homepage.icon=mysql
+    - homepage.description=MixPost MySQL DB
+    - lostack.autostart=true
+    - lostack.group=mixpost
+    - lostack.enable=true
+  mixpost-redis:
+    image: redis:latest
+    container_name: mixpost-redis
+    hostname: mixpost-redis
+    networks:
+    - traefik_network
+    command: redis-server --appendonly yes --replica-read-only no
+    healthcheck:
+      test:
+      - CMD
+      - redis-cli
+      - ping
+      retries: 3
+      timeout: 5s
+    restart: unless-stopped
+    volumes:
+    - ${APPDATA_DIR}/mixpost/redis:/data
+    labels:
+    - homepage.name=MixPost Redis DB
+    - homepage.group=Databases
+    - homepage.icon=redis
+    - homepage.description=MixPost Redis DB
+    - lostack.autostart=true
+    - lostack.group=mixpost
+    - lostack.enable=true

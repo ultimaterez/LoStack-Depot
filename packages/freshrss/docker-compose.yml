@@ -1,0 +1,86 @@
+services:
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss
+    restart: unless-stopped
+    depends_on:
+      freshrss-db:
+        condition: service_healthy
+    networks:
+    - traefik_network
+    environment:
+      TZ: ${TZ}
+      CRON_MIN: 7,37
+      FRESHRSS_ENV: production
+      COPY_LOG_TO_SYSLOG: 'On'
+      COPY_SYSLOG_TO_STDERR: 'On'
+      TRUSTED_PROXY: ${TRUSTED_PROXYS_CIDR}
+      FRESHRSS_INSTALL: '--api_enabled
+
+        --base_url https://freshrss.${DOMAINNAME}
+
+        --db-base freshrss
+
+        --db-host freshrss-db
+
+        --db-password ${DATABASE_PASSWORD}
+
+        --db-type pgsql
+
+        --db-user freshrss
+
+        --default_user admin
+
+        --language en
+
+        '
+      FRESHRSS_USER: "--api_password ${ADMIN_PASSWORD}\n--email admin@${DOMAINNAME}\
+        \ \n--language en\n--password ${ADMIN_PASSWORD}\n--user admin\n"
+    logging:
+      options:
+        max-size: 10m
+    volumes:
+    - ${APPDATA_DIR}/freshrss/data:/var/www/FreshRSS/data
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.freshrss.rule=Host(`freshrss.${DOMAINNAME}`)
+    - lostack.port=80
+    - homepage.name=FreshRSS
+    - homepage.group=Apps
+    - homepage.icon=freshrss
+    - homepage.description=RSS Feed Aggregator
+    - homepage.href=https://freshrss.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=freshrss
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=rss,scraper,json
+    - lostack.project_url=https://github.com/FreshRSS/FreshRSS
+    - lostack.details=FreshRSS is a self-hosted RSS feed aggregator. It is lightweight, easy to work with, powerful, and customizable. It is a multi-user application with an anonymous reading mode. It supports custom tags. There is an API for (mobile) clients, and a Command-Line Interface.
+  freshrss-db:
+    image: postgres:15-alpine
+    container_name: freshrss-db
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    environment:
+      POSTGRES_DB: freshrss
+      POSTGRES_USER: freshrss
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U freshrss
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+    - ${APPDATA_DIR}/freshrss/db:/var/lib/postgresql/data
+    labels:
+    - homepage.name=FreshRSS Postgres DB
+    - homepage.group=Databases
+    - homepage.icon=postgresql
+    - homepage.description=FreshRSS Database
+    - lostack.autostart=true
+    - lostack.group=freshrss
+    - lostack.enable=true

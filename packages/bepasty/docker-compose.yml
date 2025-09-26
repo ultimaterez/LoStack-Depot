@@ -1,0 +1,26 @@
+services:
+  bepasty:
+    image: asmaps/bepasty
+    hostname: bepasty
+    container_name: bepasty
+    restart: always
+    networks:
+    - traefik_network
+    volumes:
+    - ${APPDATA_DIR}/bepasty:/srv/bepasty
+    labels:
+    - lostack.enable=true
+    - traefik.http.routers.bepasty.entrypoints=https
+    # - traefik.http.routers.bepasty.rule=Host(`bepasty.${DOMAINNAME}`)
+    - lostack.port=5000
+    - homepage.name=BePasty
+    - homepage.group=Pastebins
+    - homepage.icon=mdi-clipboard-outline
+    - homepage.description=Code Snippets
+    - homepage.href=https://bepasty.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=bepasty
+    - lostack.default_duration=30m
+    - lostack.primary=true
+    - lostack.details=A pastebin for all kinds of files.
+    - lostack.project_url=https://github.com/asmaps/bepasty-docker

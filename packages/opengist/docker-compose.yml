@@ -1,0 +1,26 @@
+services:
+  opengist:
+    image: ghcr.io/thomiceli/opengist:1
+    hostname: opengist
+    container_name: opengist
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    volumes:
+    - ${APPDATA_DIR}/opengist:/opengist
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.opengist.rule=Host(`opengist.${DOMAINNAME}`)
+    - lostack.port=6157
+    - homepage.name=Opengist
+    - homepage.group=Pastebins
+    - homepage.icon=opengist
+    - homepage.description=Git Powered Pastebin
+    - homepage.href=https://opengist.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=opengist
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=git,notes,sharing
+    - lostack.project_url=https://github.com/thomiceli/opengist
+    - lostack.details=Opengist is a self-hosted Pastebin powered by Git. All snippets are stored in a Git repository and can be read and/or modified using standard Git commands, or with the web interface. It is similar to GitHub Gist, but open-source and could be self-hosted.

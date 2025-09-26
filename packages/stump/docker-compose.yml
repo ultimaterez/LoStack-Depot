@@ -1,0 +1,30 @@
+services:
+  stump:
+    image: aaronleopold/stump:latest
+    container_name: stump
+    environment:
+    - PUID=1000
+    - PGID=1000
+    restart: unless-stopped
+    hostname: stump
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=OPDS Manga and Book Server
+    - homepage.group=Media
+    - homepage.href=https://stump.${DOMAINNAME}/
+    - homepage.icon=stump
+    - homepage.name=Stump
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,ebooks,comics,manga,opds
+    - lostack.project_url=https://github.com/stumpapp/stump
+    - lostack.details=A free and open source comics, manga and digital book server with OPDS support
+    - lostack.autostart=true
+    - lostack.group=stump
+    - lostack.enable=true
+    # - traefik.http.routers.stump.rule=Host(`stump.${DOMAINNAME}`)
+    - lostack.port=10801
+    volumes:
+    - ${APPDATA_DIR}/stump:/config
+    - ${MEDIA_DIR}/books:/data

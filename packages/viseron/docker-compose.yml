@@ -1,0 +1,28 @@
+services:
+  viseron:
+    image: roflcoopter/viseron:latest
+    container_name: viseron
+    restart: always
+    hostname: viseron
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=NVR with AI
+    - homepage.group=Video Surveilance
+    - homepage.href=https://viseron.${DOMAINNAME}/
+    - homepage.icon=viseron
+    - homepage.name=Viseron
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=nvr,ai,recording
+    - lostack.project_url=https://github.com/roflcoopter/viseron
+    - lostack.details=Self-hosted, local only NVR and AI Computer Vision software. With features such as object detection, motion detection, face recognition and more, it gives you the power to keep an eye on your home, office or any other place you want to monitor.
+    - lostack.autostart=true
+    - lostack.group=viseron
+    - lostack.enable=true
+    # - traefik.http.routers.viseron.rule=Host(`viseron.${DOMAINNAME}`)
+    - lostack.port=8888
+    volumes:
+    - ${MEDIA_DIR}/recordings:/recordings
+    - ${APPDATA_DIR}/viseron:/config
+    - /etc/localtime:/etc/localtime:ro

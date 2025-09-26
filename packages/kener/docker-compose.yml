@@ -1,0 +1,33 @@
+services:
+  kener:
+    image: rajnandan1/kener:latest
+    container_name: kener
+    environment:
+    - TZ=${TZ}
+    - ORIGIN=https://kener.${DOMAINNAME}
+    hostname: kener
+    networks:
+    - traefik_network
+    entrypoint: "sh -c '\n  if [ ! -f /config/secret.key ]; then\n    echo \"Generating\
+      \ new secret key...\"\n    mkdir -p /config\n    SECRET_KEY=$(openssl rand -hex\
+      \ 32)\n    echo \"KENER_SECRET_KEY=$$SECRET_KEY\" > /config/secret.key\n  else\n\
+      \    echo \"Using existing secret key from /config/secret.key\"\n  fi\n  . /config/secret.key\n\
+      \  export KENER_SECRET_KEY\n  exec node main\n'"
+    labels:
+    - homepage.description=Service Health Dashboard
+    - homepage.group=Network Monitoring
+    - homepage.href=https://kener.${DOMAINNAME}/
+    - homepage.icon=mdi-view-dashboard-variant-outline
+    - homepage.name=Kener
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=dashboard,monitoring
+    - lostack.project_url=https://github.com/rajnandan1/kener
+    - lostack.details=Kener is a sleek and lightweight status page system built with SvelteKit and NodeJS. It’s not here to replace heavyweights like Datadog or Atlassian but rather to offer a simple, modern, and hassle-free way to set up a great-looking status page with minimal effort.
+    - lostack.autostart=true
+    - lostack.group=kener
+    - lostack.enable=true
+    # - traefik.http.routers.kener.rule=Host(`kener.${DOMAINNAME}`)
+    - lostack.port=3000
+    volumes:
+    - ${APPDATA_DIR}/kener:/config:rw

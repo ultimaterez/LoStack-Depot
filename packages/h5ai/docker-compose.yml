@@ -1,0 +1,31 @@
+services:
+  h5ai:
+    image: awesometic/h5ai
+    container_name: h5ai
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: h5ai
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=HTTP Web Server
+    - homepage.group=File Managers
+    - homepage.href=https://h5ai.${DOMAINNAME}/
+    - homepage.icon=mdi-file-cabinet
+    - homepage.name=H5ai
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=server,files
+    - lostack.project_url=https://github.com/lrsjng/h5ai/
+    - lostack.details=A modern HTTP web server index for Apache httpd, lighttpd, and nginx.
+    - lostack.autostart=true
+    - lostack.group=h5ai
+    - lostack.enable=true
+    # - traefik.http.routers.h5ai.rule=Host(`h5ai.${DOMAINNAME}`)
+    - lostack.port=80
+    volumes:
+    - ${MEDIA_DIR}:/h5ai
+    - ${APPDATA_DIR}/h5ai:/config

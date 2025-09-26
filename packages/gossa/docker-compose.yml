@@ -1,0 +1,26 @@
+services:
+  gossa:
+    image: pldubouilh/gossa
+    restart: unless-stopped
+    container_name: gossa
+    hostname: gossa
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Simple File Webserver
+    - homepage.group=File Managers
+    - homepage.href=https://gossa.${DOMAINNAME}/
+    - homepage.icon=mdi-file-cabinet
+    - homepage.name=Gossa
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,server,sharing,media
+    - lostack.project_url=https://github.com/pldubouilh/gossa
+    - lostack.details=A fast and simple webserver for your files, that's dependency-free and with under 250 lines of code, easy to review.
+    - lostack.autostart=true
+    - lostack.group=gossa
+    - lostack.enable=true
+    # - traefik.http.routers.gossa.rule=Host(`gossa.${DOMAINNAME}`)
+    - lostack.port=8001
+    volumes:
+    - ${APPDATA_DIR}/gossa:/shared

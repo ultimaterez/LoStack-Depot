@@ -1,0 +1,29 @@
+services:
+  notepad:
+    image: athlon1600/notepad:latest
+    hostname: notepad
+    container_name: notepad
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
+    networks:
+    - traefik_network
+    volumes:
+    - ${APPDATA_DIR}/notepad/storage:/app/backend/storage
+    - ${APPDATA_DIR}/notepad/public:/app/backend/public
+    labels:
+    - lostack.enable=true
+    # - traefik.http.routers.notepad.rule=Host(`notepad.${DOMAINNAME}`)
+    - lostack.port=3000
+    - homepage.name=Notepad.mx
+    - homepage.group=Pastebins
+    - homepage.icon=mdi-note-edit-outline
+    - homepage.description=Notes and Short Links
+    - homepage.href=https://notepad.${DOMAINNAME}/
+    - lostack.autostart=true
+    - lostack.group=notepad
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,sharing,notes,links
+    - lostack.project_url=https://github.com/Athlon1600/notepad
+    - lostack.details=A simple web-based notepad for writing and securely storing notes online. Useful for easy sharing of text between people or devices.

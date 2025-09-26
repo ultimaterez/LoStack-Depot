@@ -1,0 +1,33 @@
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=${TZ}
+    - DOCKER_MODS=linuxserver/mods:universal-calibre
+    - OAUTHLIB_RELAX_TOKEN_SCOPE=1
+    restart: unless-stopped
+    hostname: calibre-web
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Read and Download Ebooks
+    - homepage.group=Media
+    - homepage.href=https://calibre-web.${DOMAINNAME}/
+    - homepage.icon=calibre-web
+    - homepage.name=Calibre-web
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.project_url=https://awesome-docker-compose.com/apps/e-books/calibre-web
+    - "lostack.details=Web app providing a clean interface for browsing, reading and downloading eBooks using an existing Calibre database."
+    - lostack.tags=ebooks,media,downloader,administration,files
+    - lostack.autostart=true
+    - lostack.group=calibre-web
+    - lostack.enable=true
+    # - traefik.http.routers.calibre-web.rule=Host(`calibre-web.${DOMAINNAME}`)
+    - lostack.port=8083
+    volumes:
+    - ${APPDATA_DIR}/calibre-web:/config
+    - ${MEDIA_DIR}/books:/books

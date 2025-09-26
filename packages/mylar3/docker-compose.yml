@@ -1,0 +1,32 @@
+services:
+  mylar3:
+    image: lscr.io/linuxserver/mylar3:latest
+    container_name: mylar3
+    environment:
+    - PUID=1000
+    - PGID=10
+    - TZ=${TZ}
+    restart: unless-stopped
+    hostname: mylar3
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=Comic Book Downloader
+    - homepage.group=Video Downloaders
+    - homepage.href=https://mylar3.${DOMAINNAME}/
+    - homepage.icon=mylar
+    - homepage.name=Mylar3
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=files,downloader,comics,manga,cbr,cbz,files
+    - lostack.project_url=https://github.com/mylar3/mylar3
+    - lostack.details=The python3 version of the automated Comic Book downloader (cbr/cbz) for use with various download clients.
+    - lostack.autostart=true
+    - lostack.group=mylar3
+    - lostack.enable=true
+    # - traefik.http.routers.mylar3.rule=Host(`mylar3.${DOMAINNAME}`)
+    - lostack.port=8090
+    volumes:
+    - ${APPDATA_DIR}/mylar3:/config
+    - ${MEDIA_DIR}/comics:/comics
+    - ${MEDIA_DIR}/downloads/comics:/downloads

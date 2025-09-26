@@ -1,0 +1,24 @@
+services:
+  tagspaces:
+    image: tagspaces/tagspaces-lite-web:5.4.4
+    restart: unless-stopped
+    container_name: tagspaces
+    hostname: tagspaces
+    networks:
+    - traefik_network
+    labels:
+    - homepage.description=File Organizer
+    - homepage.group=File Managers
+    - homepage.href=https://tagspaces.${DOMAINNAME}/
+    - homepage.icon=mdi-tag-outline
+    - homepage.name=Tagspaces
+    - lostack.default_duration=15m
+    - lostack.primary=true
+    - lostack.tags=markdown,files,notes
+    - lostack.project_url=https://github.com/tagspaces/tagspaces
+    - lostack.details=TagSpaces is a free and open-source platform for organizing, tagging, and managing your local files. It runs completely offline, with no need for cloud services, internet connection, or vendor lock-in. 
+    - lostack.autostart=true
+    - lostack.group=tagspaces
+    - lostack.enable=true
+    # - traefik.http.routers.tagspaces.rule=Host(`tagspaces.${DOMAINNAME}`)
+    - lostack.port=80
